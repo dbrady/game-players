@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+require_relative '../lib/number'
+require_relative '../lib/solver'
+
+numbers = ARGV.dup.map { |n| Number.new n.to_i }
+goal = numbers.pop
+
+puts "Goal: #{goal}"
+puts "Numbers: #{numbers * ' '}"
+solvers = Solver.new(numbers, goal).solve
+solutions = solvers.map {|s| Array(s) }.flatten
+num_sols = solutions.size
+# uniquify by .to_s
+solutions = solutions.each.with_object({}) {|s,h| h[s.to_s] = s }.values
+num_uniq = solutions.size
+
+str = "Found #{num_sols} solutions (#{num_uniq} unique)"
+puts str
+puts '-' * str.size
+solutions.sort_by {|s| [s.score, s.to_s.size] }.first(10).each do |s|
+  puts "%5d: %s" % [s.score, s]
+end

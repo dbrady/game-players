@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+require 'json'
+
+class Word
+  attr_reader :word
+
+  def initialize(string)
+    @word = string
+  end
+
+  def histogram
+    @histogram ||= letters.each_with_object(Hash.new(0)) { |letter, histogram| histogram[letter] += 1 }
+  end
+
+  def letters
+    @letters ||= word.split(//)
+  end
+
+  def to_s
+    histogram.to_json
+  end
+
+  def subset?(word)
+    letters.all? { |l| word.histogram.key?(l) && word.histogram[l] >= histogram[l]}
+  end
+
+  def remainder_from(other_letters=[])
+    # can't use Array#- because it will do a set delete, e.g. "mississippi" - "ssi" should be "mssippi", but splitting and running through Array#- would return %w(m p p).
+    remainder = other_letters.dup
+    letters.each do |letter|
+      if remainder.include? letter
+        remainder.delete_at(remainder.index(letter))
+      end
+    end
+    remainder * ', '
+  end
+end
+
+
+w = Word.new(ARGV[0])
+the_letters = w.letters.dup
+
+puts IO.readlines("/usr/share/dict/words").map { |line| line.downcase.strip }.map { |word| Word.new(word) }.select { |word| word.subset?(w) }.map { |w| w.word }.sort_by(&:length).map { |w| "%d: %s (%s)" % [w.length, w, Word.new(w).remainder_from(the_letters)] }
