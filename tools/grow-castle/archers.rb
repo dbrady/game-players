@@ -74,4 +74,4 @@ end
 # 3. I'm at level x, how much will it cost to reach damage y?
 
 # For now, just print the chart of costs from 800 to 1000
-archer_chart 844, 1000
+archer_chart 844, 1042
