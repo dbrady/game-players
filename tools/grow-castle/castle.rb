@@ -108,7 +108,11 @@ def cost_from(start_level, end_level)
 end
 
 def level_info(level, from_level=0)
-  "Level: %5d HP: %7d MP: %5d Cost: %10s Total Cost: %12s" % [level, hp_for_level(level), mp_for_level(level), commaize(cost_for_level(level)), commaize(cost_from(from_level, level))]
+  "Level: %5d HP: %7d MP: %5d Cost: %10s Total Cost: %12s" % level_data(level, from_level)
+end
+
+def level_data(level, from_level=0)
+  [level, hp_for_level(level), mp_for_level(level), commaize(cost_for_level(level)), commaize(cost_from(from_level, level))]
 end
 
 def castle_chart(from_level:, to_level:)
@@ -118,6 +122,15 @@ def castle_chart(from_level:, to_level:)
   size = level_info(to_level,from_level).size
   puts '-' * size
   show_improvement from_level: from_level, to_level: to_level
+end
+
+def castle_table(from_level:, to_level:)
+  ray = [['Level', 'HP', 'MP', 'Cost', 'Total Cost']]
+  from_level.step(to_level).each do |level|
+    ray << level_data(level, from_level).map {|value| { value: value, align: :right }}
+  end
+  puts ray.to_table first_row_is_head: true
+  puts improvement_text(from_level: from_level, to_level: to_level)
 end
 
 def how_much_upgrade_can_i_afford(from_level:, with_budget:)
@@ -130,15 +143,29 @@ def how_much_upgrade_can_i_afford(from_level:, with_budget:)
   end
   size = level_info(level,from_level).size
   puts '-' * size
-  show_improvement from_level: from_level, to_level: level
+  puts improvement_text(from_level: from_level, to_level: level)
 end
 
-def show_improvement(from_level:, to_level:)
-  old_hp, new_hp = hp_for_level(from_level), hp_for_level(to_level)
-  old_mp, new_mp = mp_for_level(from_level), mp_for_level(to_level)
-  puts "Improvement:"
-  puts "HP: %6d -> %6d (%s%.1f%%)" % [old_hp, new_hp, (new_hp-old_hp).sign, 100.0 * new_hp / old_hp - 100]
-  puts "MP: %6d -> %6d (%s%.1f%%)" % [old_mp, new_mp, (new_mp-old_mp).sign, 100.0 * new_mp / old_mp - 100]
+def improvement(from:, to:)
+  [from, to, (to-from).sign, 100.0 * to / from - 100]
+end
+
+def hp_improvement(from_level:, to_level:)
+  improvement from: hp_for_level(from_level), to: hp_for_level(to_level)
+end
+
+def mp_improvement(from_level:, to_level:)
+  improvement from: mp_for_level(from_level), to: mp_for_level(to_level)
+end
+
+def improvement_text(from_level:, to_level:)
+  str = <<STR
+Improvement:
+HP: %6d -> %6d (%s%.1f%%)
+MP: %6d -> %6d (%s%.1f%%)
+STR
+  str % [hp_improvement(from_level: from_level, to_level: to_level),
+         mp_improvement(from_level: from_level, to_level: to_level)].flatten
 end
 
 # Okay so the questions I have most about archers are:
@@ -154,7 +181,7 @@ puts "WARNING: Castle costs will be weird below level 60".bold.white.on_yellow i
 
 case command
 when 'chart'
-  castle_chart from_level: level, to_level: goal
+  castle_table from_level: level, to_level: goal
 when 'budget'
   how_much_upgrade_can_i_afford from_level: level, with_budget: goal
 end
