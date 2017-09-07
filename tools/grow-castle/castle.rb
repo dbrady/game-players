@@ -15,7 +15,7 @@ end
 
 class Numeric
   def sign
-    self / abs
+    self > 0 ? '+' : '-'
   end
 end
 
@@ -88,6 +88,9 @@ def castle_chart(from_level:, to_level:)
   from_level.step(to_level).each do |level|
     puts level_info(level, from_level)
   end
+  size = level_info(to_level,from_level).size
+  puts '-' * size
+  show_improvement from_level: from_level, to_level: to_level
 end
 
 def how_much_upgrade_can_i_afford(from_level:, with_budget:)
@@ -98,6 +101,17 @@ def how_much_upgrade_can_i_afford(from_level:, with_budget:)
     total_cost += cost_for_level(level)
     level += 1
   end
+  size = level_info(level,from_level).size
+  puts '-' * size
+  show_improvement from_level: from_level, to_level: level
+end
+
+def show_improvement(from_level:, to_level:)
+  old_hp, new_hp = hp_for_level(from_level), hp_for_level(to_level)
+  old_mp, new_mp = mp_for_level(from_level), mp_for_level(to_level)
+  puts "Improvement:"
+  puts "HP: %6d -> %6d (%s%.1f%%)" % [old_hp, new_hp, (new_hp-old_hp).sign, 100.0 * new_hp / old_hp - 100]
+  puts "MP: %6d -> %6d (%s%.1f%%)" % [old_mp, new_mp, (new_mp-old_mp).sign, 100.0 * new_mp / old_mp - 100]
 end
 
 # Okay so the questions I have most about archers are:
