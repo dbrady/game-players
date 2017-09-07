@@ -10,6 +10,10 @@ ruby castle.rb <chart|budget> <start_level> <goal>
 Commands:
     chart starting_level max_level - display castle build progression chart
     budget starting_level budget - show how much castle you can build on a budget
+
+Note:
+    budget can be written with underscores, commas, and/or k, m, b or g suffix (b == g == Billion)
+    E.g. 98.5M == 98_500_000 == 98,500,000 == 98500000
 USAGE
 end
 
@@ -31,13 +35,32 @@ COMMANDS = ['chart', 'budget']
 
 command, level, goal = *ARGV
 level = level.to_i
-goal = goal.to_i
 
 barf! "Command must be one of #{COMMANDS.inspect}" unless COMMANDS.include? command
 
 barf! "Castle level must be > 0" unless level > 0
 
-barf! "goal must be > 0" unless level > 0
+def parse_goal goal
+  return goal.to_i if goal =~ /^\d+$/
+  return goal.to_f if goal =~ /^\d+\.\d+$/
+
+  goal = goal.to_s.downcase
+  convert = goal =~ /\./ ? :to_f : :to_i
+  goal = goal.send(convert) * case goal.chars.last
+                              when 'k'
+                                1000
+                              when 'm'
+                                1_000_000
+                              when 'g', 'b'
+                                1_000_000_000
+                              else
+                                barf! "Unknown conversion factor, must be one of k, m, or g/b"
+                              end
+end
+
+goal = parse_goal(goal)
+
+barf! "goal must be > 0" unless goal > 0
 
 # WHY ISN'T THERE A WAY TO DO THIS IN RUBY
 def commaize(num)
