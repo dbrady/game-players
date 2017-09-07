@@ -41,6 +41,10 @@ barf! "Command must be one of #{COMMANDS.inspect}" unless COMMANDS.include? comm
 barf! "Castle level must be > 0" unless level > 0
 
 def parse_goal goal
+  puts goal
+  goal = goal.gsub(/[_,]/, '')
+  puts goal
+
   return goal.to_i if goal =~ /^\d+$/
   return goal.to_f if goal =~ /^\d+\.\d+$/
 
