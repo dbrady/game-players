@@ -41,9 +41,7 @@ barf! "Command must be one of #{COMMANDS.inspect}" unless COMMANDS.include? comm
 barf! "Castle level must be > 0" unless level > 0
 
 def parse_goal goal
-  puts goal
   goal = goal.gsub(/[_,]/, '')
-  puts goal
 
   return goal.to_i if goal =~ /^\d+$/
   return goal.to_f if goal =~ /^\d+\.\d+$/
@@ -115,15 +113,6 @@ def level_data(level, from_level=0)
   [level, hp_for_level(level), mp_for_level(level), commaize(cost_for_level(level)), commaize(cost_from(from_level, level))]
 end
 
-def castle_chart(from_level:, to_level:)
-  from_level.step(to_level).each do |level|
-    puts level_info(level, from_level)
-  end
-  size = level_info(to_level,from_level).size
-  puts '-' * size
-  show_improvement from_level: from_level, to_level: to_level
-end
-
 def castle_table(from_level:, to_level:)
   ray = [['Level', 'HP', 'MP', 'Cost', 'Total Cost']]
   from_level.step(to_level).each do |level|
@@ -136,13 +125,14 @@ end
 def how_much_upgrade_can_i_afford(from_level:, with_budget:)
   level = from_level
   total_cost = 0
+  ray = [['Level', 'HP', 'MP', 'Cost', 'Total Cost']]
+
   while total_cost <= with_budget
-    puts level_info(level, from_level)
+    ray << level_data(level, from_level).map {|value| { value: value, align: :right }}
     total_cost += cost_for_level(level)
     level += 1
   end
-  size = level_info(level,from_level).size
-  puts '-' * size
+  puts ray.to_table first_row_is_head: true
   puts improvement_text(from_level: from_level, to_level: level)
 end
 
