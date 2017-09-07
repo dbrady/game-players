@@ -1,6 +1,43 @@
 #!/usr/bin/env ruby
+require 'colorize'
+require 'text-table'
 
 # Chart/track castle
+def usage
+  puts <<USAGE
+ruby castle.rb <chart|budget> <start_level> <goal>
+
+Commands:
+    chart starting_level max_level - display castle build progression chart
+    budget starting_level budget - show how much castle you can build on a budget
+USAGE
+end
+
+class Numeric
+  def sign
+    self / abs
+  end
+end
+
+def barf! error
+  puts error
+  puts usage
+  exit 1
+end
+
+barf! "Expected 3 arguments, got #{ARGV.size}" unless ARGV.size == 3
+
+COMMANDS = ['chart', 'budget']
+
+command, level, goal = *ARGV
+level = level.to_i
+goal = goal.to_i
+
+barf! "Command must be one of #{COMMANDS.inspect}" unless COMMANDS.include? command
+
+barf! "Castle level must be > 0" unless level > 0
+
+barf! "goal must be > 0" unless level > 0
 
 # WHY ISN'T THERE A WAY TO DO THIS IN RUBY
 def commaize(num)
@@ -43,18 +80,13 @@ def cost_from(start_level, end_level)
   cost_to_reach(end_level) - cost_to_reach(start_level)
 end
 
-cost=1162000
-level=391
-hp=19650
-mp=3960
-
 def level_info(level, from_level=0)
   "Level: %5d HP: %7d MP: %5d Cost: %10s Total Cost: %12s" % [level, hp_for_level(level), mp_for_level(level), commaize(cost_for_level(level)), commaize(cost_from(from_level, level))]
 end
 
-def castle_chart(start_level, end_level, increment=1)
-  start_level.step(end_level, increment).each do |level|
-    puts level_info(level, start_level)
+def castle_chart(from_level:, to_level:)
+  from_level.step(to_level).each do |level|
+    puts level_info(level, from_level)
   end
 end
 
@@ -77,4 +109,11 @@ end
 # how_much_upgrade_can_i_afford from_level: 391, with_budget: 218_614_449
 # castle_chart 391, 550
 
-how_much_upgrade_can_i_afford from_level: 550, with_budget: 221_000_000
+puts "WARNING: Castle costs will be weird below level 60".bold.white.on_yellow if level < 60
+
+case command
+when 'chart'
+  castle_chart from_level: level, to_level: goal
+when 'budget'
+  how_much_upgrade_can_i_afford from_level: level, with_budget: goal
+end
