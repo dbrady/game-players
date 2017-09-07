@@ -57,7 +57,7 @@ end
 # re-read the gold per hour rate.
 orcs = Income.new "Orc Workers", 216_000, 3600
 workers = Income.new "Human Workers", 1_641_600, 3600
-colonies = Income.new "Colonies", 259_193, 48
+colonies = Income.new "Colonies", 354_013, 48
 
 g0=890931
 g1=1272670
