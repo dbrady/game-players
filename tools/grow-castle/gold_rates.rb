@@ -59,6 +59,9 @@ orcs = Income.new "Orc Workers", 216_000, 3600
 workers = Income.new "Human Workers", 1_641_600, 3600
 colonies = Income.new "Colonies", 354_013, 48
 
+broken_coin = Income.new "Autocombat with Broken Coin", 880118, 30
+no_broken_coin = Income.new "Autocombat w/o Broken Coin", 1074211, 30
+
 g0=890931
 g1=1272670
 
@@ -77,6 +80,8 @@ combat_colony = Income.new "Combat Only (Colony Gold Buffs)", 79514, 45.0
 combat_buffed = Income.new "Combat Only (Combat Gold Buffs)", 95306, 45.0
 incomes << combat
 incomes << combat_colony
+incomes << broken_coin
+incomes << no_broken_coin
 
 
 g0=4354472

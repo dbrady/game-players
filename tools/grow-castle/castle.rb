@@ -69,16 +69,17 @@ def commaize(num)
   num.to_s.reverse.chars.each_slice(3).map(&:join).join(",").reverse
 end
 
-
-# Upgrading the castle costs 3500*(L-59)
+CASTLE_UPGRADE_INCREMENT=3500
+#CASTLE_UPGRADE_OFFSET=
+# Upgrading the castle costs CASTLE_UPGRADE_INCREMENT*(L-59)
 # MP equals 10*L+50 or 10*(L+5)
 # HP 50*L+100 or 50*(L+2)
 
 # SO! cost_for_level = (level-44)*1000
 
-# Upgrading the castle costs 3500*(L-59)
+# Upgrading the castle costs CASTLE_UPGRADE_INCREMENT*(L-59)
 def cost_for_level level
-  (level-59)*3500
+  (level-59)*CASTLE_UPGRADE_INCREMENT
 end
 
 # MP equals 10*L+50 or 10*(L+5)
@@ -95,7 +96,7 @@ end
 # cost to reach any level from level 44 is a simple n(n-1)/2
 def cost_to_reach level
   n = level-59
-  (n*(n-1)/2)*3500
+  (n*(n-1)/2)*CASTLE_UPGRADE_INCREMENT
 end
 
 # there is certainly a clean formula to calculate just start to finish but I'm

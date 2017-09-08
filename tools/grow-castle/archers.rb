@@ -32,6 +32,31 @@ def cost_for_level level
 end
 
 # AND! damage_for_level = (level-42)*0.5+0.1
+# DANGER DANGER DANGER DANGER DANGER DANGER DANGER DANGER DANGER
+# DANGER DANGER DANGER DANGER DANGER DANGER DANGER DANGER DANGER
+# DANGER DANGER DANGER DANGER DANGER DANGER DANGER DANGER DANGER
+#
+# This is affected by the % of hell world colonies! It totally skews the linear
+# relationship! I currently have (counting manually here...) a total boost of
+# 29% to archer damage coming from the hell world. I *ALSO* have a 60% bonus
+# coming from the fire bow. Turns out these are both automatically factored into
+# the damage adjustments.
+
+# DANGER - ALSO! Prices are sublinear. That weird L-59 thing I keep finding? It
+# gets worse as the game goes on, by which I mean better, because the price
+# increment breaks along the way. I started this morning with castle level 550
+# and 243M gold, and calculated I should be able to reach castle level 681. I
+# reached 684. Somewhere along the way the increment dropped from 3,500 to
+# 3,000.
+
+
+# Level   Dam+29%   Dam+59%   Dam+89%
+# 1059    331.1     407.5     515.8
+#
+# 1059*1.29=1136.11; 331.1 / 1136.11
+# 1059*1.59=1683.81; 407.5 / 1683.81
+# 1059*1.89=2001.51; 515.8 / 2001.51
+
 def damage_for_level level
   (level-42)*0.5+0.1
 end
@@ -74,4 +99,4 @@ end
 # 3. I'm at level x, how much will it cost to reach damage y?
 
 # For now, just print the chart of costs from 800 to 1000
-archer_chart 844, 1042
+archer_chart 1050, 1060
