@@ -22,7 +22,6 @@ Weapon Effect:
 - Knock % - Knockback Chance
 - MP -% - Reduce MP Cost
 
-|------------------------+---+---+---+---------------------------+-------------------------+--------------------------------------------------------------------------------------|
 | Name                   | W | E | S | Weapon                    | Accessory               | Notes                                                                                |
 |------------------------+---+---+---+---------------------------+-------------------------+--------------------------------------------------------------------------------------|
 | Dark Ranger            | B |   | F | B)                        | R)GP +23                | Strafe 7sec 350%                                                                     |
@@ -36,14 +35,14 @@ Weapon Effect:
 | Necromancer            | W |   | 0 | W)                        |                         | No attack; Necromancer curses enemy unit dam or hp                                   |
 | Military Band (F) (XP) | S |   | 0 | S)                        |                         | No attack or active skills; +42% XP                                                  |
 | Military Band (M) (GP) | S |   | 0 | S)                        |                         | No attack or active skills; +35% Gold                                                |
-| Cleric                 | W |   |   | W)                        |                         | No attack; Town archer dam +120% for 5sec                                            |
+| Cleric                 | W |   | 0 | W)                        |                         | No attack; Town archer dam +120% for 5sec                                            |
 | Stone Giant            | S |   | F | S)Dam +6.8%               | E)Dam +134              | Alt form Mad Giant does more damage but dies much sooner                             |
 | Spear Slinger          | S |   | N | S)                        | R)Dam +145              | Summon 5 human slinger units for 20s (300% Dam per hit); Alt form has Poison element |
-| Stos                   | H |   |   | H)                        |                         | No attack; Repair 40% HP, 15% MP; Alt form repairs 60% HP, no MP                     |
+| Stos                   | H |   | 0 | H)                        |                         | No attack; Repair 40% HP, 15% MP; Alt form repairs 60% HP, no MP                     |
 | Venom Voodoo           | S | P | N | S)Stun +8.0%, Dam +68     | E)PDam +11.5%           | Alt form hits more often and lower MP cost, but for less damage                      |
 | Mechanic Rambo II      | S | F | F | S)GP +19                  | N)Dam +151(36)          | Alt form has wider range for less damage                                             |
 | Paladin                | S |   | F | S)Dam +160(30)            | R)GP +15                | Alt forms are Ice or Fire Barbarians                                                 |
-| Architect              | H |   |   | H)MP -5.6%                |                         | No attack; Alt forms build stronger wall, cheaper wall, and wall with attack tower   |
+| Architect              | H |   | 0 | H)MP -5.6%                |                         | No attack; Alt forms build stronger wall, cheaper wall, and wall with attack tower   |
 | Lisa                   | S | F | F | S)GP +38                  | E)FDam +8.5%            | Summons undead melee; all witches get +50% faster summon                             |
 | Alice                  | B | F | F | B)Dam +163(30)            | R)Dam +148(30)          | Summons undead archers; all nonhuman summons get +50% damage (includes golems, orcs) |
 | Dorothy                | W | F | F | W)Dam +122, GP +45(31)    | N)Dam +189(40)          | Summons undead mages; all nonhuman summons get +50% atk speed (incl. golems, orcs)   |
@@ -54,6 +53,8 @@ Weapon Effect:
 | Angel                  | S |   | F | S)GP +11                  | B)GP +24                | Summons angels (valkyries). Not doubled by Bar so not human; maybe buffed by witches |
 | Zeus                   | H | L | F | H)LDam +6.9%              | R)Dam +135              | Passive: Summons thunderbolts doing 100% dam every 4.5sec                            |
 | Golem Master           | H |   | F | H)GP +19                  | N)Dam +137(31)          | Golems have infinite HP                                                              |
+
+| Name                   | W | E | S | Weapon                    | Accessory               | Notes                                                                                |
 |------------------------+---+---+---+---------------------------+-------------------------+--------------------------------------------------------------------------------------|
 | Edward                 | S |   | F | S)Dam +1.5%               |                         | All Summoned Units Dam +10%, Summon 2 Militia Every 15.0sec                          |
 | Solar                  | W | F | F | W)Dam +140 (30)           | N)Dam +5.0%             | All Fire Dam +5%, Meteor 100% Dam every 15.0sec                                      |
@@ -62,4 +63,48 @@ Weapon Effect:
 | Sara                   | B | P | F | B)Stun +6.5%, Dam +38     | N)PDam +8.0%            | All Poison Dam +10%, Strafe 150% per arrow every 10.0sec                             |
 | Tony                   | S |   | F | S)Crit +10.4%             | E)GPH +13               | 10.0% Dam stolen as gold, Max crystals +19                                           |
 | Din                    | H |   | F | H)Knock +6.5%             | B)Crit +22.9%           | Drill & Slash for 10%                                                                |
-|------------------------+---+---+---+---------------------------+-------------------------+--------------------------------------------------------------------------------------|
+
+
+* Rules of Thumb for Dust vs. Keep
+** By Weapon Type
+Hammers:
+Ogre, Stos, Architect, Zeus, Golem Master, Thor, Din
+- DESPERATELY want cooldown for Stos/Architect
+- Architect might want good MP -Cost%
+- Zeus and Thor both want LDam
+-
+- Fire Ogre wants FDam / Dam
+-
+- Stos - no attack
+Swords: Very popular - check by effect
+
+Wands: All the wizardy-type peeps.
+Ice, Lightning and Fire Mages; White Mage, Necromancer, Cleric,
+- DESPERATELY want cooldown for Cleric, Necromancer and White Mage, though I
+  currently do not use any of these characters
+
+Bows:
+
+** By Effect
+- Gold: 20GP or higher
+- Damage: 30 or higher
+- Dam %: 10 or higher
+- Crit %: 20 or higher
+- Stun: Dust for now; haven't found need.
+- Knockback: Dust for now; haven't found need.
+- Attack Speed: 10.0% or higher. Which means dust for now; I've not seen one
+  above about 5% and that's just not worth it when I can get DAM +150 or DAM
+  +10% etc. Maybe at higher levels when what I really want is to spread their
+  attacks around like stun or knockback
+
+Lightning Damage: Hammer/Wand only - Zeus, Thor, Lightning Wizard.
+
+Fire Damage: This one's popular. Look for +10% or more
+- Wand - Fire Mage, Solar, Witches, Dorothy
+- Sword - Rambo, Fire Flying Orc, Lisa
+- Bow - Alice
+Poison Damage: Sword/Bow only - Voodoo, Poison Flying Orc and Sara.
+
+Cold Damage: Wand only (maybe sword). Ice Sorceror, Ice Windy, Zero; Swords only
+if I'm running Ice Barbarian or Ice Flying Orc. MAYBE witches if I change their
+elemental promotion?
