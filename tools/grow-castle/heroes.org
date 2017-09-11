@@ -12,7 +12,7 @@ Weapon Effect:
 - Dam N - Boost DAM points per hit (better at lower levels)
 - Dam % - Boost DAM % per hit (better at higher levels)
 - Crit % - Critical Damage %
-- ?? - Unknown if there's items to boost critical chance
+- CritChance % - Critical Chance %
 - LDam % - Lightning Damage %
 - PDam % - Poison Damage %
 - CDam % - Cold Damage %
@@ -22,47 +22,47 @@ Weapon Effect:
 - Knock % - Knockback Chance
 - MP -% - Reduce MP Cost
 
-| Name                   | W | E | S | Weapon                    | Accessory               | Notes                                                                                |
-|------------------------+---+---+---+---------------------------+-------------------------+--------------------------------------------------------------------------------------|
-| Dark Ranger            | B |   | F | B)                        | R)GP +23                | Strafe 7sec 350%                                                                     |
-| Dark Hunter            | B |   | F | B)Dam +192(40)            | N)GP +21                | Town Archers +200% Speed for 6.5sec                                                  |
-| Dark Elf               | B |   | F | B)Dam +141(30)            | E)Dam +131(30)          | 20.0% HP Steal, 10% MP Steal                                                         |
-| Ice Sorceror           | W | I | N | W)CDam +8.0%, CDam +11.7% | E)CDam +10.2%           | Freeze 5 Sec doing 50% Dam                                                           |
-| Lightning Wizard       | W | L | N | W)LDam +10.0%             | R)MP -7.0%, LDam +11.5% | 10 Thunder Storms 235% each, Stronger vs. Flying                                     |
-| Fire Mage              | W | F | N | W)FDam +7.8%              | B)FDam +11.0%           | 5 Meteors, 265% Dam each                                                             |
-| White Mage             | W |   | 0 | W)                        |                         | No attack; reduces cooldown of heroes                                                |
-| Flame Ogre             | H | F | F | H)GP +16                  | N)Dam +151(30)          | Non-fire Ogre has no element, adds stun to earthquake attack                         |
-| Necromancer            | W |   | 0 | W)                        |                         | No attack; Necromancer curses enemy unit dam or hp                                   |
-| Military Band (F) (XP) | S |   | 0 | S)                        |                         | No attack or active skills; +42% XP                                                  |
-| Military Band (M) (GP) | S |   | 0 | S)                        |                         | No attack or active skills; +35% Gold                                                |
-| Cleric                 | W |   | 0 | W)                        |                         | No attack; Town archer dam +120% for 5sec                                            |
-| Stone Giant            | S |   | F | S)Dam +6.8%               | E)Dam +134              | Alt form Mad Giant does more damage but dies much sooner                             |
-| Spear Slinger          | S |   | N | S)                        | R)Dam +145              | Summon 5 human slinger units for 20s (300% Dam per hit); Alt form has Poison element |
-| Stos                   | H |   | 0 | H)                        |                         | No attack; Repair 40% HP, 15% MP; Alt form repairs 60% HP, no MP                     |
-| Venom Voodoo           | S | P | N | S)Stun +8.0%, Dam +68     | E)PDam +11.5%           | Alt form hits more often and lower MP cost, but for less damage                      |
-| Mechanic Rambo II      | S | F | F | S)GP +19                  | N)Dam +151(36)          | Alt form has wider range for less damage                                             |
-| Paladin                | S |   | F | S)Dam +160(30)            | R)GP +15                | Alt forms are Ice or Fire Barbarians                                                 |
-| Architect              | H |   | 0 | H)MP -5.6%                |                         | No attack; Alt forms build stronger wall, cheaper wall, and wall with attack tower   |
-| Lisa                   | S | F | F | S)GP +38                  | E)FDam +8.5%            | Summons undead melee; all witches get +50% faster summon                             |
-| Alice                  | B | F | F | B)Dam +163(30)            | R)Dam +148(30)          | Summons undead archers; all nonhuman summons get +50% damage (includes golems, orcs) |
-| Dorothy                | W | F | F | W)Dam +122, GP +45(31)    | N)Dam +189(40)          | Summons undead mages; all nonhuman summons get +50% atk speed (incl. golems, orcs)   |
-| Wolf Druid             | W |   | F | W)Dam +152(30)            | R)Dam +10.0%(34)        | Summoned wolves/hawks have infinite HP                                               |
-| Deep Assasin           | S |   | V | S)Dam +109(30)            | N)Dam +157(30)          | Hits all monsters for 200%; both forms cause survivors to take worse criticals       |
-| Fire Flying Orc        | S | F | S | S)                        | E)GP +24                | Alt forms have Ice or Poison elements                                                |
-| Ice Windy              | W | I | S | W)Dam +127(30)            | R)CDam +12.5%           | Alt form Fire summons single massive tornado, Ice form crowd controls all lanes      |
-| Angel                  | S |   | F | S)GP +11                  | B)GP +24                | Summons angels (valkyries). Not doubled by Bar so not human; maybe buffed by witches |
-| Zeus                   | H | L | F | H)LDam +6.9%              | R)Dam +135              | Passive: Summons thunderbolts doing 100% dam every 4.5sec                            |
-| Golem Master           | H |   | F | H)GP +19                  | N)Dam +137(31)          | Golems have infinite HP                                                              |
+| Name                   | W | E | S | Weapon                          | Accessory               | Notes                                                                                |
+|------------------------+---+---+---+---------------------------------+-------------------------+--------------------------------------------------------------------------------------|
+| Dark Ranger            | B |   | F | B)                              | R)GP +23                | Strafe 7sec 350%                                                                     |
+| Dark Hunter            | B |   | F | B)Dam +192(40)                  | N)GP +21                | Town Archers +200% Speed for 6.5sec                                                  |
+| Dark Elf               | B |   | F | B)Dam +141(30)                  | E)Dam +131(30)          | 20.0% HP Steal, 10% MP Steal                                                         |
+| Ice Sorceror           | W | I | N | W)CDam +8.0%, CDam +11.7%       | E)CDam +10.2%           | Freeze 5 Sec doing 50% Dam                                                           |
+| Lightning Wizard       | W | L | N | W)LDam +10.0%                   | R)MP -7.0%, LDam +11.5% | 10 Thunder Storms 235% each, Stronger vs. Flying                                     |
+| Fire Mage              | W | F | N | W)FDam +7.8%                    | B)FDam +11.0%           | 5 Meteors, 265% Dam each                                                             |
+| White Mage             | W |   | 0 | W)                              |                         | No attack; reduces cooldown of heroes                                                |
+| Flame Ogre             | H | F | F | H)FDam +12.0%                   | N)Dam +151(30)          | Non-fire Ogre has no element, adds stun to earthquake attack                         |
+| Necromancer            | W |   | 0 | W)                              |                         | No attack; Necromancer curses enemy unit dam or hp                                   |
+| Military Band (F) (XP) | S |   | 0 | S)                              |                         | No attack or active skills; +42% XP                                                  |
+| Military Band (M) (GP) | S |   | 0 | S)                              |                         | No attack or active skills; +35% Gold                                                |
+| Cleric                 | W |   | 0 | W)                              |                         | No attack; Town archer dam +120% for 5sec                                            |
+| Stone Giant            | S |   | F | S)Dam +6.8%                     | E)Dam +134              | Alt form Mad Giant does more damage but dies much sooner                             |
+| Spear Slinger          | S |   | N | S)                              | R)Dam +145              | Summon 5 human slinger units for 20s (300% Dam per hit); Alt form has Poison element |
+| Stos                   | H |   | 0 | H)                              |                         | No attack; Repair 40% HP, 15% MP; Alt form repairs 60% HP, no MP                     |
+| Venom Voodoo           | S | P | N | S)Stun +8.0%, Dam +68           | E)PDam +11.5%           | Alt form hits more often and lower MP cost, but for less damage                      |
+| Mechanic Rambo II      | S | F | F | S)GP +19                        | N)Dam +151(36)          | Alt form has wider range for less damage                                             |
+| Paladin                | S |   | F | S)Dam +160(30)                  | R)GP +15                | Alt forms are Ice or Fire Barbarians                                                 |
+| Architect              | H |   | 0 | H)MP -5.6%                      |                         | No attack; Alt forms build stronger wall, cheaper wall, and wall with attack tower   |
+| Lisa                   | S | F | F | S)FDam +10.8%, CritChance +2.9% | E)FDam +8.5%            | Summons undead melee; all witches get +50% faster summon                             |
+| Alice                  | B | F | F | B)Dam +163(30)                  | R)Dam +148(30)          | Summons undead archers; all nonhuman summons get +50% damage (includes golems, orcs) |
+| Dorothy                | W | F | F | W)Dam +122, GP +45(31)          | N)Dam +189(40)          | Summons undead mages; all nonhuman summons get +50% atk speed (incl. golems, orcs)   |
+| Wolf Druid             | W |   | F | W)Dam +152(30)                  | R)Dam +10.0%(34)        | Summoned wolves/hawks have infinite HP                                               |
+| Deep Assasin           | S |   | V | S)Dam +109(30)                  | N)Dam +157(30)          | Hits all monsters for 200%; both forms cause survivors to take worse criticals       |
+| Fire Flying Orc        | S | F | S | S)                              | E)GP +24                | Alt forms have Ice or Poison elements                                                |
+| Ice Windy              | W | I | S | W)Dam +127(30)                  | R)CDam +12.5%           | Alt form Fire summons single massive tornado, Ice form crowd controls all lanes      |
+| Angel                  | S |   | F | S)GP +11                        | B)GP +24                | Summons angels (valkyries). Not doubled by Bar so not human; maybe buffed by witches |
+| Zeus                   | H | L | F | H)LDam +6.9%                    | R)Dam +135              | Passive: Summons thunderbolts doing 100% dam every 4.5sec                            |
+| Golem Master           | H |   | F | H)GP +19                        | N)Dam +137(31)          | Golems have infinite HP                                                              |
 
-| Name                   | W | E | S | Weapon                    | Accessory               | Notes                                                                                |
-|------------------------+---+---+---+---------------------------+-------------------------+--------------------------------------------------------------------------------------|
-| Edward                 | S |   | F | S)Dam +1.5%               |                         | All Summoned Units Dam +10%, Summon 2 Militia Every 15.0sec                          |
-| Solar                  | W | F | F | W)Dam +140 (30)           | N)Dam +5.0%             | All Fire Dam +5%, Meteor 100% Dam every 15.0sec                                      |
-| Zero                   | W | I | F | W)                        |                         | +10% Dam to slowed monsters, slow with 25% dam every 20.0sec                         |
-| Thor                   | H | L | F | H)Dam +4.8%               | N)LDam +11.5%           | All chains 2Hit, Thunder 100% every 10.0s                                            |
-| Sara                   | B | P | F | B)Stun +6.5%, Dam +38     | N)PDam +8.0%            | All Poison Dam +10%, Strafe 150% per arrow every 10.0sec                             |
-| Tony                   | S |   | F | S)Crit +10.4%             | E)GPH +13               | 10.0% Dam stolen as gold, Max crystals +19                                           |
-| Din                    | H |   | F | H)Knock +6.5%             | B)Crit +22.9%           | Drill & Slash for 10%                                                                |
+| Name   | W | E | S | Weapon          | Accessory     | Notes                                                        |
+|--------+---+---+---+-----------------+---------------+--------------------------------------------------------------|
+| Edward | S |   | F | S)Dam +1.5%     |               | All Summoned Units Dam +10%, Summon 2 Militia Every 15.0sec  |
+| Solar  | W | F | F | W)Dam +140 (30) | N)Dam +5.0%   | All Fire Dam +5%, Meteor 100% Dam every 15.0sec              |
+| Zero   | W | I | F | W)              |               | +10% Dam to slowed monsters, slow with 25% dam every 20.0sec |
+| Thor   | H | L | F | H)Dam +4.8%     | N)LDam +11.5% | All chains 2Hit, Thunder 100% every 10.0s                    |
+| Sara   | B | P | F | B)PDam +7.3%    | N)PDam +8.0%  | All Poison Dam +10%, Strafe 150% per arrow every 10.0sec     |
+| Tony   | S |   | F | S)Crit +10.4%   | E)GPH +13     | 10.0% Dam stolen as gold, Max crystals +19                   |
+| Din    | H |   | F | H)Knock +6.5%   | B)Crit +22.9% | Drill & Slash for 10%                                        |
 
 
 * Rules of Thumb for Dust vs. Keep
@@ -103,8 +103,13 @@ Fire Damage: This one's popular. Look for +10% or more
 - Wand - Fire Mage, Solar, Witches, Dorothy
 - Sword - Rambo, Fire Flying Orc, Lisa
 - Bow - Alice
+
 Poison Damage: Sword/Bow only - Voodoo, Poison Flying Orc and Sara.
+- Keep accessories over 8.0%
+- Sara's Bow is probably dustable (stun + vanilla dam)
 
 Cold Damage: Wand only (maybe sword). Ice Sorceror, Ice Windy, Zero; Swords only
 if I'm running Ice Barbarian or Ice Flying Orc. MAYBE witches if I change their
 elemental promotion?
+
+MP Cost: Hammer/Wand only. Stos, Architect, Necromancer, Cleric, White Mage
