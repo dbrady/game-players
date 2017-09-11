@@ -69,8 +69,17 @@ def commaize(num)
   num.to_s.reverse.chars.each_slice(3).map(&:join).join(",").reverse
 end
 
-CASTLE_UPGRADE_INCREMENT=3500
-#CASTLE_UPGRADE_OFFSET=
+# Castle prices are slightly sublinear. They are linear for a while and then
+# the increment drops. This would explain why my initial calculations were off
+# by about 59 levels.
+
+#CASTLE_UPGRADE_INCREMENT=3500
+CASTLE_UPGRADE_INCREMENT=3000
+CASTLE_UPGRADE_BASE_LEVEL=915
+CASTLE_UPGRADE_BASE_COST=2_788_500
+
+
+#
 # Upgrading the castle costs CASTLE_UPGRADE_INCREMENT*(L-59)
 # MP equals 10*L+50 or 10*(L+5)
 # HP 50*L+100 or 50*(L+2)
@@ -79,7 +88,8 @@ CASTLE_UPGRADE_INCREMENT=3500
 
 # Upgrading the castle costs CASTLE_UPGRADE_INCREMENT*(L-59)
 def cost_for_level level
-  (level-59)*CASTLE_UPGRADE_INCREMENT
+  CASTLE_UPGRADE_BASE_COST + (level-CASTLE_UPGRADE_BASE_LEVEL)*CASTLE_UPGRADE_INCREMENT
+  #(level-59)*CASTLE_UPGRADE_INCREMENT
 end
 
 # MP equals 10*L+50 or 10*(L+5)
@@ -93,10 +103,10 @@ def hp_for_level level
   50*(level+2)
 end
 
-# cost to reach any level from level 44 is a simple n(n-1)/2
 def cost_to_reach level
-  n = level-59
-  (n*(n-1)/2)*CASTLE_UPGRADE_INCREMENT
+  n = level - CASTLE_UPGRADE_BASE_LEVEL
+  CASTLE_UPGRADE_BASE_COST * level +
+    (n*(n+1)/2)*CASTLE_UPGRADE_INCREMENT
 end
 
 # there is certainly a clean formula to calculate just start to finish but I'm
