@@ -15,9 +15,9 @@ require_relative 'scientific_notation'
 # cells of bacteria. One cell of E. Coli weighs 0.95e-12 grams. That's 11.614
 # Octillion grams. Or 11.614 Septillion kilograms if you prefer. Which is handy
 # because about half of that, 5.972 Septillion kilograms, is the mass of the
-# entire planet Earth.
+# entire Earth.
 
-# Fuck the large wallet; bring a spare planet.
+# Forget the large wallet; bring a spare PLANET.
 
 # Anyway. In Bacterial Takeover you start with a few petri dishes, then work
 # your way up to your first germ flask; eventually you just start grabbing
@@ -50,6 +50,13 @@ require_relative 'scientific_notation'
 # reached Mars, heh.
 
 # Edit: Yup. And now I know the cost to reach the next colony, Mercury.
+
+
+# TODO: If you don't name a planet, but the first arg is a scientific number,
+# calculate the cost to reach that number, e.g. right now I need 3.945e+46 to
+# buy 10 more Mars colonies (I already have 160; don't ask me how I have 160
+# Marses lying around, let alone where I'm keeping them--they sure don't fit in
+# my spare planet Earth, narmean?)
 planet_costs = {
   "mars" => "12.225e+39".to_sci,
   "mercury" => "1.222e+48".to_sci,
