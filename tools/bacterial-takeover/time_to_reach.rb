@@ -48,6 +48,8 @@ require_relative 'scientific_notation'
 
 # which means by the time I finish writing this program I'll probably have
 # reached Mars, heh.
+
+# Edit: Yup. And now I know the cost to reach the next colony, Mercury.
 planet_costs = {
   "mars" => "12.225e+39".to_sci,
   "mercury" => "1.222e+48".to_sci,
