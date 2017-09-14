@@ -37,7 +37,7 @@ require_relative 'scientific_notation'
 # about a third short of a perfect 1:1000 growth ratio, so call it 1333 seconds
 # or so?
 # irb> 12.225e+39 / 9.065e+36
-#=> 1348.5934914506342
+# => 1348.5934914506342
 #
 # Yeah, I still got it.
 
