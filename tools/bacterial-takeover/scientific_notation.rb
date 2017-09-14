@@ -6,19 +6,22 @@ class String
   end
 
   # Given a string containing a number in scientific notation, return the number
-  # as a Float
-  #
-  # TODO: Since this game is always about very very large numbers (where the
-  # floating-point error is in quadrillions or more) do the math manually and
-  # return an Integer
+  # as an Integer. (Only works with large scientific numbers, not small
+  # ones. Sorry.)
   def to_sci
     return 0.0 unless scientific?
-    num, exp = self.split /e\+/
+    number, exponent = self.split /e\+/
 
-    num = num.to_f
-    exp = exp.to_i
+    integer, mantissa = number.split /\./
+    mantissa = mantissa.gsub /0+$/, ''
 
-    num * 10 ** exp
+    exponent = exponent.to_i - mantissa.size
+    integer += mantissa
+
+    zeros = "0" * exponent
+
+    bigass_number = integer + zeros
+    bigass_number.to_i
   end
 
   # Given a string like "1.233 Mil" or "1.233 million", return
