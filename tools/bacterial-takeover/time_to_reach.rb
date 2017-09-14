@@ -2,6 +2,10 @@
 # time_to_reach.rb - given a BPS rate, how long will it take to buy a planet
 # (default: Mars)
 
+# ruby time_to_reach.rb <rate>
+# ruby time_to_reach.rb <planet|cost> <rate>
+# ruby time_to_reach.rb <planet|cost> <rate> <starting_from>
+
 require_relative 'scientific_notation'
 
 # The Mars Colony costs 12.225 Ddc. That's Duodecillion in short scale
@@ -52,27 +56,35 @@ require_relative 'scientific_notation'
 # Edit: Yup. And now I know the cost to reach the next colony, Mercury.
 
 
-# TODO: If you don't name a planet, but the first arg is a scientific number,
+# DONE: If you don't name a planet, but the first arg is a scientific number,
 # calculate the cost to reach that number, e.g. right now I need 3.945e+46 to
 # buy 10 more Mars colonies (I already have 160; don't ask me how I have 160
 # Marses lying around, let alone where I'm keeping them--they sure don't fit in
 # my spare planet Earth, narmean?)
+
+# DONE: If you provide a third argument, assume that this is what you currently
+# have banked, e.g. if you're saved up 90% of the way to a 10 hour goal, show
+# that you only have 1 hour remaining
 planet_costs = {
   "mars" => "12.225e+39".to_sci,
   "mercury" => "1.222e+48".to_sci,
 }
 
-planet_name, rate = if ARGV.size == 2
-                 ARGV
-               elsif ARGV.size == 1
-                 ["mars", ARGV[0]]
-               else
-                 raise "Expected 1 or 2 args, got #{ARGV.size}"
-               end
+planet_name, rate, start = case ARGV.size
+                           when 3
+                             ARGV
+                           when 2
+                             [*ARGV, "0"]
+                           when 1
+                             ["mars", ARGV[0], 0]
+                           else
+                             raise "Expected 1-3 args, got #{ARGV.size}"
+                           end
 
 puts '-' * 80
 puts "planet: #{planet_name.inspect}"
 puts "rate: #{rate.inspect}"
+puts "starting_from: #{start}"
 puts '-' * 80
 
 planet = planet_name.downcase
@@ -85,12 +97,24 @@ cost = if planet_costs.has_key?(planet_name)
          raise "I don't recognize planet '#{planet_name}' (...yet?), nor does it look like a scientific number." unless planet_costs.has_key?(planet_name)
        end
 
+start = start.scientific? ? start.to_sci : start.to_i
+
 raise "'#{rate}' does not look like a number in scientific notation. Should look like '1.213e+12'" unless rate.scientific?
 
 rate = rate.to_sci
 
-puts "Cost to reach #{planet} is #{cost.to_i}"
-puts "Current rate is #{rate.to_i}"
+puts "Cost to reach #{planet} is #{cost}"
+puts "Current rate is #{rate}"
+
+if start > 0
+  puts "Starting from #{start}"
+  cost -= start
+  if cost < 0
+    puts "HEY WAIT, YOU'RE ALREADY THERE!"
+    exit 0
+  end
+  puts "Remaining cost is #{cost}"
+end
 
 seconds = cost / rate
 
