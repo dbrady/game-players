@@ -2,6 +2,7 @@
 # time_to_reach.rb - given a BPS rate, how long will it take to buy a planet
 # (default: Mars)
 
+require_relative 'scientific_notation'
 
 # The Mars Colony costs 12.225 Ddc. That's Duodecillion in short scale
 # (i.e. where a billion is a thousand million, not a million million; see
@@ -61,8 +62,8 @@ planet_name, rate = if ARGV.size == 2
                end
 
 puts '-' * 80
-puts "planet: #{planet_name}"
-puts "rate: #{rate}"
+puts "planet: #{planet_name.inspect}"
+puts "rate: #{rate.inspect}"
 puts '-' * 80
 
 planet = planet_name.downcase
@@ -70,13 +71,9 @@ planet = planet_name.downcase
 raise "I don't recognize planet '#{planet_name}' (...yet?)" unless planet_costs.has_key?(planet_name)
 cost = planet_costs[planet_name]
 
+raise "'#{rate}' does not look like a number in scientific notation. Should look like '1.213e+12'" unless rate.scientific?
 
-num, exp = rate.split /e\+/
-
-num = num.to_f
-exp = exp.to_i
-
-rate =  num * 10 ** exp
+rate = rate.to_sci
 
 puts "Cost to reach #{planet} is #{rate.to_i} (plus or minus floating-point error)"
 
