@@ -77,14 +77,20 @@ puts '-' * 80
 
 planet = planet_name.downcase
 
-raise "I don't recognize planet '#{planet_name}' (...yet?)" unless planet_costs.has_key?(planet_name)
-cost = planet_costs[planet_name]
+cost = if planet_costs.has_key?(planet_name)
+         planet_costs[planet_name]
+       elsif planet_name.scientific?
+         planet_name.to_sci
+       else
+         raise "I don't recognize planet '#{planet_name}' (...yet?), nor does it look like a scientific number." unless planet_costs.has_key?(planet_name)
+       end
 
 raise "'#{rate}' does not look like a number in scientific notation. Should look like '1.213e+12'" unless rate.scientific?
 
 rate = rate.to_sci
 
-puts "Cost to reach #{planet} is #{rate.to_i}"
+puts "Cost to reach #{planet} is #{cost.to_i}"
+puts "Current rate is #{rate.to_i}"
 
 seconds = cost / rate
 
