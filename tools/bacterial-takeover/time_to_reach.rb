@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# time_to_mars.rb - given a BPS rate, how long will it take to buy Mars colony
+# time_to_reach.rb - given a BPS rate, how long will it take to buy a planet
+# (default: Mars)
 
 
 # The Mars Colony costs 12.225 Ddc. That's Duodecillion in short scale
@@ -46,19 +47,42 @@
 
 # which means by the time I finish writing this program I'll probably have
 # reached Mars, heh.
-mars = 12.225e+39
+planet_costs = {
+  "mars" => 12.225e+39,
+  "mercury" => 1.222e+48,
+}
 
-arg = ARGV.first
-num, exp = arg.split /e\+/
+planet_name, rate = if ARGV.size == 2
+                 ARGV
+               elsif ARGV.size == 1
+                 ["mars", ARGV[0]]
+               else
+                 raise "Expected 1 or 2 args, got #{ARGV.size}"
+               end
+
+puts '-' * 80
+puts "planet: #{planet_name}"
+puts "rate: #{rate}"
+puts '-' * 80
+
+planet = planet_name.downcase
+
+raise "I don't recognize planet '#{planet_name}' (...yet?)" unless planet_costs.has_key?(planet_name)
+cost = planet_costs[planet_name]
+
+
+num, exp = rate.split /e\+/
 
 num = num.to_f
 exp = exp.to_i
 
 rate =  num * 10 ** exp
 
-seconds = (mars / rate).to_i
+puts "Cost to reach #{planet} is #{rate.to_i} (plus or minus floating-point error)"
 
-puts seconds
+seconds = (cost / rate).to_i
+
+puts "#{seconds} seconds"
 
 days = seconds / 86400
 seconds -= 86400 * days
@@ -69,3 +93,7 @@ seconds -= 60 * min
 sec = seconds
 
 puts "%d days, %d:%02d:%02d" % [ days, hours, min, sec ]
+
+if days > 365.25
+  puts "LOL, that's over #{(days / 365.25).to_i} years!"
+end
