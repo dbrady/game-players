@@ -49,8 +49,8 @@ require_relative 'scientific_notation'
 # which means by the time I finish writing this program I'll probably have
 # reached Mars, heh.
 planet_costs = {
-  "mars" => 12.225e+39,
-  "mercury" => 1.222e+48,
+  "mars" => "12.225e+39".to_sci,
+  "mercury" => "1.222e+48".to_sci,
 }
 
 planet_name, rate = if ARGV.size == 2
@@ -75,9 +75,9 @@ raise "'#{rate}' does not look like a number in scientific notation. Should look
 
 rate = rate.to_sci
 
-puts "Cost to reach #{planet} is #{rate.to_i} (plus or minus floating-point error)"
+puts "Cost to reach #{planet} is #{rate.to_i}"
 
-seconds = (cost / rate).to_i
+seconds = cost / rate
 
 puts "#{seconds} seconds"
 
