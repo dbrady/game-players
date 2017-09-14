@@ -7,6 +7,7 @@
 # ruby time_to_reach.rb <planet|cost> <rate> <starting_from>
 
 require_relative 'scientific_notation'
+require 'text-table'
 
 # The Mars Colony costs 12.225 Ddc. That's Duodecillion in short scale
 # (i.e. where a billion is a thousand million, not a million million; see
@@ -81,12 +82,6 @@ planet_name, rate, start = case ARGV.size
                              raise "Expected 1-3 args, got #{ARGV.size}"
                            end
 
-puts '-' * 80
-puts "planet: #{planet_name.inspect}"
-puts "rate: #{rate.inspect}"
-puts "starting_from: #{start}"
-puts '-' * 80
-
 planet = planet_name.downcase
 
 cost = if planet_costs.has_key?(planet_name)
@@ -103,33 +98,59 @@ raise "'#{rate}' does not look like a number in scientific notation. Should look
 
 rate = rate.to_sci
 
-puts "Cost to reach #{planet} is #{cost}"
-puts "Current rate is #{rate}"
+data = []
 
-if start > 0
-  puts "Starting from #{start}"
-  cost -= start
-  if cost < 0
-    puts "HEY WAIT, YOU'RE ALREADY THERE!"
-    exit 0
+data << [ "Cost to reach #{planet}", { value: cost, align: :right } ]
+data << [ "Current rate", { value: rate, align: :right } ]
+
+data << [ "Starting from", { value: start, align: :right } ]
+cost -= start
+if cost < 0
+  data << [ "Remaining cost", "HEY WAIT, YOU'RE ALREADY THERE!" ]
+else
+  seconds = cost / rate
+
+  data << :separator
+
+  data << [ "Seconds to reach target", { value: seconds, align: :right } ]
+
+  days = seconds / 86400
+  seconds -= 86400 * days
+  hours = seconds / 3600
+  seconds -= 3600 * hours
+  min = seconds / 60
+  seconds -= 60 * min
+  sec = seconds
+
+  data << [ "Time remaining", "%d days, %d:%02d:%02d" % [ days, hours, min, sec ] ]
+
+  if days > 365.25
+    data << [ "Sad trombone", "LOL, that's over #{(days / 365.25).to_i} years!" ]
   end
-  puts "Remaining cost is #{cost}"
+
+  if days > 365.25 * 2
+    data << [ "Sadder trombone", "LOLOL, you won't even still have this phone by then!" ]
+  end
+
+  if days > 365.25 * 50
+    data << [ "Saddest trombone", "LOLOLOL, also you'll be dead." ]
+  end
+
+  if days > 365.25 * 10000
+    data << [ "Comforting trombone", "But don't feel bad, so will all of human civilization." ]
+  end
+
+  if days > 365.25 * 1_600_000_000
+    data << [ "Nihilist trombone", "And Planet Earth will have been consumed as the the Sun expands into a Red Giant." ]
+  end
+
+  if days > "365.25e+14".to_sci
+    data << [ "Nihilister trombone", "And the Universe itself will no longer be capable of sustaining life." ]
+  end
+
+  if days > "365.25e+34".to_sci
+    data << [ "Nihilistest trombone", "This will literally take longer than the heat death of the Universe." ]
+  end
 end
 
-seconds = cost / rate
-
-puts "#{seconds} seconds"
-
-days = seconds / 86400
-seconds -= 86400 * days
-hours = seconds / 3600
-seconds -= 3600 * hours
-min = seconds / 60
-seconds -= 60 * min
-sec = seconds
-
-puts "%d days, %d:%02d:%02d" % [ days, hours, min, sec ]
-
-if days > 365.25
-  puts "LOL, that's over #{(days / 365.25).to_i} years!"
-end
+puts data.to_table
