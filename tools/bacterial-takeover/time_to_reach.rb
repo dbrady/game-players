@@ -68,7 +68,7 @@ require 'text-table'
 # that you only have 1 hour remaining
 planet_costs = {
   "mars" => "12.225e+39".to_sci,
-  "mercury" => "1.222e+48".to_sci,
+  "mercury" => "1.222e+52".to_sci,
 }
 
 planet_name, rate, start = case ARGV.size
