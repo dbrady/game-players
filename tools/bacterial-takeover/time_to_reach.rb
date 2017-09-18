@@ -6,6 +6,13 @@
 # ruby time_to_reach.rb <planet|cost> <rate>
 # ruby time_to_reach.rb <planet|cost> <rate> <starting_from>
 
+# planet can be a name or an abbreviation, e.g. "earth", "paflaolus", and
+# "aclanus" can be expressed as "e", "p", and "a" respectively. "mars" can be
+# expressed as "ma", since "mars" is already pretty short. "mercury" can be
+# expressed as "m" for confusion. It can be expressed as "me" for consistency,
+# and "hg" for gratuitous cleverness.
+
+
 require_relative 'scientific_notation'
 require 'text-table'
 
@@ -66,14 +73,34 @@ require 'text-table'
 # DONE: If you provide a third argument, assume that this is what you currently
 # have banked, e.g. if you're saved up 90% of the way to a 10 hour goal, show
 # that you only have 1 hour remaining
+
+# DANGER: Falling prices! These are influenced by the Bacteria in your Evolution
+# Slots! These prices have never matched vanilla game (I started this tool long
+# after I already had some bacteria set up) and more importantly I need them
+# kept up to date with my current prices since I want to calculate time in MY
+# here and now.
 planet_costs = {
   "mars" => "12.225e+39".to_sci,
   "mercury" => "1.222e+48".to_sci,
   "earth" => "1.22e+58".to_sci,
   "paflaolus" => "1.22e+68".to_sci,
   "aclanus" => "1.222e+83".to_sci,
-  "lableilara" => "1.222e+99".to_sci
+  "lableilara" => "1.224e+99".to_sci
 }
+
+# DONE: Add shortcodes for planets because no way I'm ever typing lableilara
+# correctly more than twice
+planet_codes = {
+  # no mars because that's the default, sorry
+  # (And I can't be arsed to memorize Hg for mercury, heh)
+  "ma" => "mars",
+  "me" => "mercury",
+  "hg" => "mercury", # deal with it more BB)
+}
+
+(planet_costs.keys - ["mars"]).each do |name|
+  planet_codes[name[0]] = name
+end
 
 planet_name, rate, start = case ARGV.size
                            when 3
@@ -85,6 +112,9 @@ planet_name, rate, start = case ARGV.size
                            else
                              raise "Expected 1-3 args, got #{ARGV.size}"
                            end
+
+planet_name = planet_codes.fetch(planet_name, planet_name)
+
 
 planet = planet_name.downcase
 
