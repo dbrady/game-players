@@ -12,19 +12,24 @@ def banner *objects, &block
 end
 
 class Mine
-  attr_reader :doc, :legend
+  attr_reader :doc, :legend, :tileset
 
-  TILESET = ['.', *0..9, *'a'..'z', *'A'..'Z']
+  TILESET = [*'0'..'9', *'a'..'z', *'A'..'Z']
+  OPEN_CAVERN = ' '.on_light_black
+
   KNOWN_TILES = {
+    0 => ' ', # object layer -- nothing here
     1 => '#'.light_black.on_black, # bedrock
     2 => ' '.on_cyan, # sky
     3 => '.'.yellow.on_black, # dirt
     8 => "O".light_white.on_light_black, # boulder
-    9 => " ".on_light_black, # open cavern
+    9 => OPEN_CAVERN,
     10 => "O".light_blue.on_light_white, # ice block
+    43 => 'g'.white.on_yellow, # gold
     49 => 'c'.white.on_black, # coal
     51 => 'I'.yellow.on_black, # iron
     56 => 'L'.white.on_light_black, # lift shaft
+    58 => OPEN_CAVERN, # actually a broken stalagmite
     63 => '|'.light_yellow.on_black, # support beam
     67 => '#'.light_yellow.on_black, # ladder
     68 => '#'.light_yellow.on_light_black, # burnt ladder
@@ -37,6 +42,7 @@ class Mine
   def initialize xml
     @doc = Nokogiri::XML xml
     @legend = {}
+    @tileset = TILESET.dup
   end
 
   def self.load file
@@ -102,19 +108,73 @@ class Mine
     KNOWN_TILES.key? tile
   end
 
-  def encoding_for data, tile
-    unless legend[data]
-      legend[data] = {}
-      legend[data][:tileset] = TILESET.dup
+  def encoding_for tile
+    legend[tile] ||= if known_tile? tile
+                       KNOWN_TILES[tile]
+                     else
+                       tileset.shift
+                     end
+  end
+
+  def map_data
+    @map_data ||= plot!
+  end
+
+  def plot!
+    map_data = {}
+    map_layers.each do |map|
+      layer = map["name"]
+      map_data[layer] = []
+      data = map.xpath("data").children.first
+      data.inner_text.each_line.with_index do |row, index|
+        row.sub(/,$/, '')
+        nums = row.split(/,/).map(&:to_i)
+        nums.pop if nums.size == width+1
+        next if nums.size != width
+        # row = nums.map {|num| encoding_for(data, num)}
+        map_data[layer] << nums
+      end
     end
-    legend[data][tile] ||= if known_tile? tile
-                             KNOWN_TILES[tile]
-                           else
-                             legend[data][:tileset].shift
-                           end
+    map_data
+  end
+
+  def tile_at(x, y)
+    object = map_data["objects"][y][x]
+    return object unless object == 0
+    map_data["main"][y][x]
   end
 
   def draw_map
+    height.times do |y|
+      print "%2d|" % y
+      width.times do |x|
+        tile = tile_at x, y
+        display = encoding_for tile
+        display = display.on_red unless known_tile?(tile)
+        print display
+      end
+      puts
+    end
+    # map_data.each do |name, rows|
+    #   puts "#{name}:"
+    #   rows.each.with_index do |row, index|
+    #     text = row.map {|tile| encoding_for(tile) }.join('')
+    #     puts "%2d|%s" % [index-5, text]
+    #   end
+    # end
+
+    puts '-' * 80
+    puts "Legend:"
+    knowns = legend.dup.keep_if {|key, val| KNOWN_TILES.values.include? val }
+    unknowns = legend.dup.delete_if {|key, val| KNOWN_TILES.values.include? val }
+    puts "Known Tiles: "
+    puts knowns.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
+    puts "Unknown Tiles: "
+    puts unknowns.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
+    puts '-' * 80
+  end
+
+  def draw_map_old
     map_layers.each do |map|
       puts "#{map.name} #{map['name']}:"
       data = map.xpath("data").children.first
@@ -123,29 +183,14 @@ class Mine
         nums = row.split(/,/).map(&:to_i)
         nums.pop if nums.size == width+1
         next if nums.size != width
-        row = nums.map {|num| encoding_for(data, num)}.join('')
+        row = nums.map {|num| encoding_for(num)}.join('')
         puts "%2d|%s" % [index-5, row]
       end
-      puts '-' * 80
-      puts legend[data].dup.tap {|h|
-        h.delete :tileset
-      }.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
-      puts '-' * 80
-
-
-      # render without encoding (show raw nums)
-      # data.inner_text.each_line.with_index do |row, index|
-      #   row.sub(/,$/, '')
-      #   nums = row.split(/,/).map(&:to_i)
-      #   nums.pop if nums.size == width+1
-      #   next if nums.size != width
-      #   row = nums.join(',')
-      #   puts "%2d|%s" % [index-5, row]
-      # endth
-
-      # height.times do |y|
-      # end
     end
+
+    puts '-' * 80
+    puts legend.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
+    puts '-' * 80
   end
 end
 
