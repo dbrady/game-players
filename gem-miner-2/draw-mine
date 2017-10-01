@@ -16,10 +16,22 @@ class Mine
 
   TILESET = ['.', *0..9, *'a'..'z', *'A'..'Z']
   KNOWN_TILES = {
+    1 => '#'.light_black.on_black, # bedrock
+    2 => ' '.on_cyan, # sky
+    3 => '.'.yellow.on_black, # dirt
+    8 => "O".light_white.on_light_black, # boulder
+    9 => " ".on_light_black, # open cavern
+    10 => "O".light_blue.on_light_white, # ice block
     49 => 'c'.white.on_black, # coal
-    56 => '|'.white.on_light_black, # lift shaft
-    67 => 'H'.yellow.on_black, # ladder
-    68 => 'H'.yellow.on_light_black, # burnt ladder
+    51 => 'I'.yellow.on_black, # iron
+    56 => 'L'.white.on_light_black, # lift shaft
+    63 => '|'.light_yellow.on_black, # support beam
+    67 => '#'.light_yellow.on_black, # ladder
+    68 => '#'.light_yellow.on_light_black, # burnt ladder
+    70 => '@'.cyan.on_black, # teleport/fast travel
+    81 => '^'.cyan.on_light_black, # ice stalagmite
+    82 => '|'.cyan.on_light_black, # ice column
+    83 => 'v'.cyan.on_light_black, # ice stalactite
   }
 
   def initialize xml
@@ -47,6 +59,14 @@ class Mine
 
   def map_layers
     doc.xpath "//map/layer"
+  end
+
+  def geologic_layer
+    map_layers.find {|layer| layer["name"] == "main" }
+  end
+
+  def object_layer
+    map_layers.find {|layer| layer["name"] == "objects" }
   end
 
   def render
@@ -113,14 +133,15 @@ class Mine
       puts '-' * 80
 
 
-      data.inner_text.each_line.with_index do |row, index|
-        row.sub(/,$/, '')
-        nums = row.split(/,/).map(&:to_i)
-        nums.pop if nums.size == width+1
-        next if nums.size != width
-        row = nums.join(',')
-        puts "%2d|%s" % [index-5, row]
-      end
+      # render without encoding (show raw nums)
+      # data.inner_text.each_line.with_index do |row, index|
+      #   row.sub(/,$/, '')
+      #   nums = row.split(/,/).map(&:to_i)
+      #   nums.pop if nums.size == width+1
+      #   next if nums.size != width
+      #   row = nums.join(',')
+      #   puts "%2d|%s" % [index-5, row]
+      # endth
 
       # height.times do |y|
       # end
