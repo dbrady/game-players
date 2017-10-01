@@ -1,0 +1,142 @@
+#!/usr/bin/env ruby
+require 'nokogiri'
+require 'colorize'
+
+def banner *objects, &block
+  puts '-' * 80
+  objects.each do |object|
+    puts object.inspect
+  end
+  puts yield if block_given?
+  puts '-' * 80
+end
+
+class Mine
+  attr_reader :doc, :legend
+
+  TILESET = ['.', *0..9, *'a'..'z', *'A'..'Z']
+  KNOWN_TILES = {
+    49 => 'c'.white.on_black, # coal
+    56 => '|'.white.on_light_black, # lift shaft
+    67 => 'H'.yellow.on_black, # ladder
+    68 => 'H'.yellow.on_light_black, # burnt ladder
+  }
+
+  def initialize xml
+    @doc = Nokogiri::XML xml
+    @legend = {}
+  end
+
+  def self.load file
+    Mine.new(File.open(file))
+  end
+
+  def height
+    map_layers
+      .map {|layer| layer["height"] || ""}
+      .map {|height| height.to_i }
+      .max
+  end
+
+  def width
+    map_layers
+      .map {|layer| layer["width"] || ""}
+      .map {|width| width.to_i }
+      .max
+  end
+
+  def map_layers
+    doc.xpath "//map/layer"
+  end
+
+  def render
+    render_node doc.children.first
+  end
+
+  def describe_node node
+    desc = node.name
+    if node["name"]
+      desc += ": #{node['name']}"
+      if node["value"]
+        value = node["value"]
+        value = value[0..29] + '...' if value.size > 32
+        desc += "='#{value}'"
+      end
+    end
+    desc
+  end
+
+  def render_node node, indent=1
+    text = []
+    margin = ' ' * indent * 2
+    text << "#{margin}#{describe_node(node)}"
+    if !node.children.empty?
+      node.children.each do |child|
+        text.concat render_node(child, indent+1)
+      end
+    end
+    text
+  end
+
+  def known_tile? tile
+    KNOWN_TILES.key? tile
+  end
+
+  def encoding_for data, tile
+    unless legend[data]
+      legend[data] = {}
+      legend[data][:tileset] = TILESET.dup
+    end
+    legend[data][tile] ||= if known_tile? tile
+                             KNOWN_TILES[tile]
+                           else
+                             legend[data][:tileset].shift
+                           end
+  end
+
+  def draw_map
+    map_layers.each do |map|
+      puts "#{map.name} #{map['name']}:"
+      data = map.xpath("data").children.first
+      data.inner_text.each_line.with_index do |row, index|
+        row.sub(/,$/, '')
+        nums = row.split(/,/).map(&:to_i)
+        nums.pop if nums.size == width+1
+        next if nums.size != width
+        row = nums.map {|num| encoding_for(data, num)}.join('')
+        puts "%2d|%s" % [index-5, row]
+      end
+      puts '-' * 80
+      puts legend[data].dup.tap {|h|
+        h.delete :tileset
+      }.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
+      puts '-' * 80
+
+
+      data.inner_text.each_line.with_index do |row, index|
+        row.sub(/,$/, '')
+        nums = row.split(/,/).map(&:to_i)
+        nums.pop if nums.size == width+1
+        next if nums.size != width
+        row = nums.join(',')
+        puts "%2d|%s" % [index-5, row]
+      end
+
+      # height.times do |y|
+      # end
+    end
+  end
+end
+
+if __FILE__==$0
+  mine = Mine.load ARGV[0]
+  mine.map_layers.each do |map_layer|
+    puts "%s: %sx%s" % [ map_layer["name"], map_layer["width"], map_layer["height"]]
+  end
+
+  puts "Mine: (#{mine.width}x#{mine.height})"
+
+  mine.draw_map
+  # puts mine.map_layer.inspect
+#  puts mine.render
+end
