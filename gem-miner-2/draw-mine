@@ -15,28 +15,66 @@ class Mine
   attr_reader :doc, :legend, :tileset
 
   TILESET = [*'0'..'9', *'a'..'z', *'A'..'Z']
-  OPEN_CAVERN = ' '.on_light_black
+
+  EMPTY = ' '
+  IMPASSABLE = '#'
+  PORTAL = '@'
+  BOULDER = 'O'
+  OPEN_CAVERN = EMPTY.on_light_black
+  LIFT = 'L'.white.on_light_black
+  MARBLE = IMPASSABLE.white.on_light_yellow
+
+  TRIGGER = '^'.red.on_light_black
 
   KNOWN_TILES = {
     0 => ' ', # object layer -- nothing here
-    1 => '#'.light_black.on_black, # bedrock
+    1 => IMPASSABLE.light_black.on_black, # bedrock
     2 => ' '.on_cyan, # sky
     3 => '.'.yellow.on_black, # dirt
-    8 => "O".light_white.on_light_black, # boulder
+    8 => BOULDER.light_white.on_light_black, # boulder
     9 => OPEN_CAVERN,
-    10 => "O".light_blue.on_light_white, # ice block
+    10 => BOULDER.light_blue.on_light_white, # ice block
+    15 => "&".cyan.on_light_black, # miner dude
+    19 => OPEN_CAVERN, # hanging vines
+    41 => 'o'.green.on_black, # green opal
     43 => 'g'.white.on_yellow, # gold
     49 => 'c'.white.on_black, # coal
     51 => 'I'.yellow.on_black, # iron
-    56 => 'L'.white.on_light_black, # lift shaft
+    53 => 'm'.light_red.on_black, # manganese
+    56 => LIFT, # lift shaft
     58 => OPEN_CAVERN, # actually a broken stalagmite
+    60 => OPEN_CAVERN, # stalagmite
+    61 => OPEN_CAVERN, # unconnected stalactite & stalagmite
+    62 => OPEN_CAVERN, # stalactite
     63 => '|'.light_yellow.on_black, # support beam
     67 => '#'.light_yellow.on_black, # ladder
     68 => '#'.light_yellow.on_light_black, # burnt ladder
-    70 => '@'.cyan.on_black, # teleport/fast travel
-    81 => '^'.cyan.on_light_black, # ice stalagmite
-    82 => '|'.cyan.on_light_black, # ice column
-    83 => 'v'.cyan.on_light_black, # ice stalactite
+    69 => PORTAL.black.on_cyan, # teleport WAY OUT
+    70 => PORTAL.cyan.on_light_black, # teleport/fast travel
+    71 => "W".white.on_cyan, # pool in temple
+    72 => OPEN_CAVERN, # open cavern with quest trigger
+    77 => MARBLE, # single temple brick
+    79 => '/'.red.on_light_black, # lever
+    81 => OPEN_CAVERN, # ice stalagmite
+    82 => OPEN_CAVERN, # ice column
+    83 => OPEN_CAVERN, # ice stalactite
+    90 => "|".red.on_light_black, # temple door
+    99 => MARBLE, # double temple brick, left
+    100 => MARBLE, # double temple brick, right
+    105 => OPEN_CAVERN, # cobweb top right
+    106 => LIFT.red, # broken lift
+    107 => OPEN_CAVERN, # open cavern with quest trigger
+    128 => OPEN_CAVERN, # orchid
+    129 => OPEN_CAVERN, # hanging vine
+    130 => OPEN_CAVERN, # open cavern with quest trigger
+    136 => OPEN_CAVERN, # hole with light shaft
+    140 => OPEN_CAVERN, # giant palm frond
+    114 => '='.light_yellow.on_light_black, # burned walkway
+    131 => OPEN_CAVERN, # open cavern with quest trigger
+    133 => OPEN_CAVERN, # tuft of green grass
+    142 => OPEN_CAVERN, # skulls on spikes
+    158 => MARBLE.black, # marble with peephole crack
+    165 => OPEN_CAVERN, # fronds with berries
   }
 
   def initialize xml
@@ -146,14 +184,14 @@ class Mine
 
   def draw_map
     height.times do |y|
-      print "%2d|" % y
+      print "%2d|" % (y-4)
       width.times do |x|
         tile = tile_at x, y
         display = encoding_for tile
         display = display.on_red unless known_tile?(tile)
         print display
       end
-      puts
+      puts "|%2d" % (y-4)
     end
     # map_data.each do |name, rows|
     #   puts "#{name}:"
