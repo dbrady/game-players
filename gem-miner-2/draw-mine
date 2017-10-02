@@ -1,4 +1,23 @@
 #!/usr/bin/env ruby
+# draw-mine - render a Gem Miner 2 mine from its xml resource
+#
+# draw-mine <filename.xml>
+#
+# NOTES:
+#
+# This started as a logging/learning project with no known tiles and only gave
+# me general ideas for the map. Now that it's had some time to bake, it's got a
+# fairly robust (probably over half) set of known tiles. It's time to clean this
+# up and make it be a real program
+#
+# TODO
+# - [ ] Finish all the ore types and their values
+# - [ ] Parse teleporters and put them on the map (see rainforest 7)
+# - [ ] Render the legend down the right side of the map (unless cmd-line option
+# forbids it?)
+# - [ ] Render the map as raw/debug values for those times when I don't know why
+# the map is rendering something incorrectly
+
 require 'nokogiri'
 require 'colorize'
 
@@ -312,6 +331,4 @@ if __FILE__==$0
   puts "Mine: (#{mine.width}x#{mine.height})"
 
   mine.draw_map
-  # puts mine.map_layer.inspect
-#  puts mine.render
 end
