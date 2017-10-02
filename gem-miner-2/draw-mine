@@ -58,6 +58,7 @@ class Mine
     8 => [BOULDER.light_white.on_light_black, "Boulder"],
     9 => [OPEN_CAVERN, "Open"],
     10 => [BOULDER.light_blue.on_light_white, "Ice Block"],
+    12 => ['#'.black.on_yellow, "Sign"],
     15 => ["&".cyan.on_light_black, "Miner"],
     16 => ['v'.black.on_light_black, "Bat"],
     18 => [OPEN_CAVERN, "Mushrooms"],
@@ -97,13 +98,14 @@ class Mine
     83 => [OPEN_CAVERN, "Open (Ice Stalactite)"],
     85 => ['#'.red.on_light_black, "Danger Sign"],
     90 => ["|".red.on_light_black, "Door"],
+    94 => ['%'.light_yellow.on_yellow, "Scroll"],
     98 => ["j".green.on_black, "Jade (20)"],
     99 => [MARBLE, "Temple Marble"],
     100 => [MARBLE, "Temple Marble"],
     105 => [OPEN_CAVERN, "Open (Cobweb)"],
     106 => [LIFT.red, "Lift (Broken)"],
     107 => [OPEN_CAVERN, "Open"],
-    110 => ['%'.light_yellow.on_yellow, "Scroll"],
+    110 => ['%'.light_yellow.on_yellow, "Map"],
     114 => ['='.light_yellow.on_light_black, "Walkway (Charred)"],
     115 => ['Q'.light_yellow.on_cyan, "Quest Giver"],
     120 => ['a'.blue.on_black, "Azurite (8)"],
@@ -268,6 +270,17 @@ class Mine
     puts "Unknown Tiles: "
     puts unknowns.invert.map {|key,val| "#{key.on_red}:#{val}" }.join(', ')
     puts '-' * 80
+
+    # debug
+    # puts '-' * 80
+    # height.times do |y|
+    #   print "%2d|" % (y-4)
+    #   width.times do |x|
+    #     tile = tile_at x, y
+    #     print "%3d," % tile
+    #   end
+    #   puts "|%2d" % (y-4)
+    # end
   end
 
   def draw_map_old
