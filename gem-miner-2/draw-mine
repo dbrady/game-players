@@ -48,6 +48,7 @@ class Mine
     51 => 'I'.yellow.on_black, # iron, 14
     53 => 'm'.light_red.on_black, # manganese
     54 => 'a'.light_red.on_black, # amethyst, 28
+    55 => 'F'.light_yellow.on_yellow, # fossil
     56 => LIFT, # lift shaft
     58 => OPEN_CAVERN, # actually a broken stalagmite
     59 => '%'.magenta.on_light_black, # coal gas
@@ -101,6 +102,7 @@ class Mine
     142 => OPEN_CAVERN, # skulls on spikes
     151 => OPEN_CAVERN, # jungle foliage
     153 => OPEN_CAVERN, # jungle foliage
+    155 => '/'.light_yellow.on_black, # TikTok's spear
     158 => MARBLE.black, # marble with peephole crack
     160 => 'z'.white.on_black, # zinc, 20
     161 => OPEN_CAVERN, # jungle foliage
