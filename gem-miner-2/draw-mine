@@ -17,6 +17,7 @@
 # forbids it?)
 # - [ ] Render the map as raw/debug values for those times when I don't know why
 # the map is rendering something incorrectly
+# - [ ] Parse insect objects and put them on the map (mosquitoes)
 
 require 'nokogiri'
 require 'colorize'
