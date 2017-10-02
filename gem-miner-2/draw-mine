@@ -11,6 +11,30 @@ def banner *objects, &block
   puts '-' * 80
 end
 
+class Label
+  attr_reader :name
+
+  def initialize name
+    @name = name
+  end
+
+  def ore?
+    name =~ /\([d\?]+\)$/
+  end
+
+  def type
+    ore? ? "ore" : "label"
+  end
+
+  def <=> other
+    [type, name] <=> [other.type, other.name]
+  end
+
+  def to_s
+    name
+  end
+end
+
 class Mine
   attr_reader :doc, :legend, :tileset
 
@@ -27,95 +51,101 @@ class Mine
   TRIGGER = '^'.red.on_light_black
 
   KNOWN_TILES = {
-    0 => ' ', # object layer -- nothing here
-    1 => IMPASSABLE.light_black.on_black, # bedrock
-    2 => ' '.on_cyan, # sky
-    3 => '.'.yellow.on_black, # dirt
-    8 => BOULDER.light_white.on_light_black, # boulder
-    9 => OPEN_CAVERN,
-    10 => BOULDER.light_blue.on_light_white, # ice block
-    15 => "&".cyan.on_light_black, # miner dude
-    16 => 'v'.black.on_light_black, # bat
-    18 => OPEN_CAVERN, # mushrooms
-    19 => OPEN_CAVERN, # hanging vines
-    20 => 'g'.white.on_black, # guano
-    30 => 'o'.white.on_light_black, # white opal, 19
-    38 => 'b'.yellow.on_black, # bauxite, 10
-    41 => 'o'.green.on_black, # green opal
-    43 => 'g'.white.on_yellow, # gold, 37
-    45 => 'd'.cyan.on_black, # diamond, 45
-    49 => 'c'.white.on_black, # coal, 6
-    51 => 'I'.yellow.on_black, # iron, 14
-    53 => 'm'.light_red.on_black, # manganese
-    54 => 'a'.light_red.on_black, # amethyst, 28
-    55 => 'F'.light_yellow.on_yellow, # fossil
-    56 => LIFT, # lift shaft
-    58 => OPEN_CAVERN, # actually a broken stalagmite
-    59 => '%'.magenta.on_light_black, # coal gas
-    60 => OPEN_CAVERN, # stalagmite
-    61 => OPEN_CAVERN, # unconnected stalactite & stalagmite
-    62 => OPEN_CAVERN, # stalactite
-    63 => '|'.light_yellow.on_black, # support beam
-    64 => '|'.light_yellow.on_light_black, # charred support beam
-    66 => '.'.light_red.on_black, # dirt that will cave in
-    67 => '#'.light_yellow.on_black, # ladder
-    68 => '#'.light_yellow.on_light_black, # charred ladder
-    69 => PORTAL.black.on_cyan, # teleport WAY OUT
-    70 => PORTAL.cyan.on_light_black, # teleport/fast travel
-    71 => "W".white.on_cyan, # pool in temple
-    72 => OPEN_CAVERN, # open cavern with quest trigger
-    73 => OPEN_CAVERN, # torch on right wall
-    76 => '^'.white.on_red, # cave-in trap trigger
-    77 => MARBLE, # single temple brick
-    79 => '/'.red.on_light_black, # lever
-    81 => OPEN_CAVERN, # ice stalagmite
-    82 => OPEN_CAVERN, # ice column
-    83 => OPEN_CAVERN, # ice stalactite
-    85 => '#'.red.on_light_black, # DANGER! sign
-    90 => "|".red.on_light_black, # temple door
-    98 => "j".green.on_black, # jade, 20
-    99 => MARBLE, # double temple brick, left
-    100 => MARBLE, # double temple brick, right
-    105 => OPEN_CAVERN, # cobweb top right
-    106 => LIFT.red, # broken lift
-    107 => OPEN_CAVERN, # open cavern with quest trigger
-    110 => '%'.light_yellow.on_yellow, # scroll/map
-    114 => '='.light_yellow.on_light_black, # charred walkway
-    115 => 'Q'.light_yellow.on_cyan, # quest targe (biplane, harold, etc)
-    120 => 'a'.blue.on_black, # azurite, 8
-    124 => OPEN_CAVERN, # jungle foliage
-    125 => OPEN_CAVERN, # jungle foliage
-    126 => OPEN_CAVERN, # jungle foliage
-    127 => OPEN_CAVERN, # jungle foliage
-    128 => OPEN_CAVERN, # orchid
-    129 => OPEN_CAVERN, # hanging vine
-    130 => OPEN_CAVERN, # open cavern with quest trigger
-    131 => OPEN_CAVERN, # open cavern with quest trigger
-    132 => OPEN_CAVERN, # jungle foliage
-    133 => OPEN_CAVERN, # tuft of green grass
-    134 => MARBLE, # double temple brick, left
-    135 => MARBLE, # double temple brick, right
-    136 => OPEN_CAVERN, # hole with light shaft
-    137 => OPEN_CAVERN, # jungle foliage
-    140 => OPEN_CAVERN, # giant palm frond
-    141 => '_'.white.on_red, # floor plate spike trap
-    142 => OPEN_CAVERN, # skulls on spikes
-    151 => OPEN_CAVERN, # jungle foliage
-    153 => OPEN_CAVERN, # jungle foliage
-    155 => '/'.light_yellow.on_black, # TikTok's spear
-    158 => MARBLE.black, # marble with peephole crack
-    160 => 'z'.white.on_black, # zinc, 20
-    161 => OPEN_CAVERN, # jungle foliage
-    162 => OPEN_CAVERN, # jungle foliage
-    165 => OPEN_CAVERN, # fronds with berries
-    166 => OPEN_CAVERN, # jungle foliage
+    0 => [' ', 'Nothing'], # object layer -- nothing here
+    1 => [IMPASSABLE.light_black.on_black, 'Bedrock'],
+    2 => [' '.on_cyan, 'Sky'],
+    3 => ['.'.yellow.on_black, "Dirt"],
+    8 => [BOULDER.light_white.on_light_black, "Boulder"],
+    9 => [OPEN_CAVERN, "Open"],
+    10 => [BOULDER.light_blue.on_light_white, "Ice Block"],
+    15 => ["&".cyan.on_light_black, "Miner"],
+    16 => ['v'.black.on_light_black, "Bat"],
+    18 => [OPEN_CAVERN, "Mushrooms"],
+    19 => [OPEN_CAVERN, "Hanging Vines"],
+    20 => ['g'.white.on_black, "Guano, 9"],
+    30 => ['o'.white.on_light_black, "White Opal (19)"],
+    38 => ['b'.yellow.on_black, "Bauxite (10)"],
+    41 => ['o'.green.on_black, "Green Opal (??)"],
+    43 => ['g'.white.on_yellow, "Gold (37)"],
+    45 => ['d'.cyan.on_black, "Diamond (45)"],
+    49 => ['c'.white.on_black, "Coal (6)"],
+    51 => ['I'.yellow.on_black, "Iron (14)"],
+    53 => ['m'.light_red.on_black, "Manganese (??)"],
+    54 => ['a'.light_red.on_black, "Amethyst (28)"],
+    55 => ['F'.light_yellow.on_yellow, "Fossil"],
+    56 => [LIFT, "Lift Shaft"],
+    58 => [OPEN_CAVERN, "Open (Broken Stalagmite)"],
+    59 => ['%'.magenta.on_light_black, "Coal Gas"],
+    60 => [OPEN_CAVERN, "Open (Stalagmite)"],
+    61 => [OPEN_CAVERN, "Open (Stalactite & Stalagmite)"],
+    62 => [OPEN_CAVERN, "Open (Stalactite)"],
+    63 => ['|'.light_yellow.on_black, "Support"],
+    64 => ['|'.light_yellow.on_light_black, "Support (Charred)"],
+    66 => ['.'.light_red.on_black, "Cave-in Dirt"],
+    67 => ['#'.light_yellow.on_black, "Ladder"],
+    68 => ['#'.light_yellow.on_light_black, "Ladder (Charred)"],
+    69 => [PORTAL.black.on_cyan, "Teleport (Way Out)"],
+    70 => [PORTAL.cyan.on_light_black, "Teleport (Intramine)"],
+    71 => ["W".white.on_cyan, "Temple Pool"],
+    72 => [OPEN_CAVERN, "Open"],
+    73 => [OPEN_CAVERN, "Open (Torch)"],
+    76 => ['^'.white.on_red, "Cave-In Trap Trigger"],
+    77 => [MARBLE, "Temple Marble"],
+    79 => ['/'.red.on_light_black, "Lever"],
+    81 => [OPEN_CAVERN, "Open (Ice Stalagmite)"],
+    82 => [OPEN_CAVERN, "Open (Ice Column)"],
+    83 => [OPEN_CAVERN, "Open (Ice Stalactite)"],
+    85 => ['#'.red.on_light_black, "Danger Sign"],
+    90 => ["|".red.on_light_black, "Door"],
+    98 => ["j".green.on_black, "Jade (20)"],
+    99 => [MARBLE, "Temple Marble"],
+    100 => [MARBLE, "Temple Marble"],
+    105 => [OPEN_CAVERN, "Open (Cobweb)"],
+    106 => [LIFT.red, "Lift (Broken)"],
+    107 => [OPEN_CAVERN, "Open"],
+    110 => ['%'.light_yellow.on_yellow, "Scroll"],
+    114 => ['='.light_yellow.on_light_black, "Walkway (Charred)"],
+    115 => ['Q'.light_yellow.on_cyan, "Quest Giver"],
+    120 => ['a'.blue.on_black, "Azurite (8)"],
+    124 => [OPEN_CAVERN, "Open (Foliage)"],
+    125 => [OPEN_CAVERN, "Open (Foliage)"],
+    126 => [OPEN_CAVERN, "Open (Foliage)"],
+    127 => [OPEN_CAVERN, "Open (Foliage)"],
+    128 => [OPEN_CAVERN, "Open (Orchid)"],
+    129 => [OPEN_CAVERN, "Open (Vine)"],
+    130 => [OPEN_CAVERN, "Open"],
+    131 => [OPEN_CAVERN, "Open"],
+    132 => [OPEN_CAVERN, "Open (Foliage)"],
+    133 => [OPEN_CAVERN, "Open (Foliage)"],
+    134 => [MARBLE, "Temple Marble"],
+    135 => [MARBLE, "Temple Marble"],
+    136 => [OPEN_CAVERN, "Open (Light Shaft)"],
+    137 => [OPEN_CAVERN, "Open (Foliage)"],
+    140 => [OPEN_CAVERN, "Open (Palm Frond)"],
+    141 => ['_'.white.on_red, "Trap Plate"],
+    142 => [OPEN_CAVERN, "Open (Skulls on Spikes)"],
+    151 => [OPEN_CAVERN, "Open (Foliage)"],
+    153 => [OPEN_CAVERN, "Open (Foliage)"],
+    155 => ['/'.light_yellow.on_black, "TikTok's Spear"],
+    158 => [MARBLE.black, "Temple Marble (Peephole)"],
+    160 => ['z'.white.on_black, "Zinc (20)"],
+    161 => [OPEN_CAVERN, "Open (Foliage)"],
+    162 => [OPEN_CAVERN, "Open (Foliage)"],
+    165 => [OPEN_CAVERN, "Open (Foliage)"],
+    166 => [OPEN_CAVERN, "Open (Foliage)"],
   }
-
 
   def initialize xml
     @doc = Nokogiri::XML xml
     @legend = {}
     @tileset = TILESET.dup
+  end
+
+  def known_tiles
+    @known_tiles ||= Hash[
+      KNOWN_TILES.map {|num, data|
+        [num, [data.first, Label.new(data.last)]]
+      }]
   end
 
   def self.load file
@@ -178,12 +208,12 @@ class Mine
   end
 
   def known_tile? tile
-    KNOWN_TILES.key? tile
+    known_tiles.key? tile
   end
 
   def encoding_for tile
     legend[tile] ||= if known_tile? tile
-                       KNOWN_TILES[tile]
+                       known_tiles[tile]
                      else
                        tileset.shift
                      end
@@ -224,26 +254,19 @@ class Mine
         tile = tile_at x, y
         display = encoding_for tile
         display = display.on_red unless known_tile?(tile)
-        print display
+        print "%s" % display
       end
       puts "|%2d" % (y-4)
     end
-    # map_data.each do |name, rows|
-    #   puts "#{name}:"
-    #   rows.each.with_index do |row, index|
-    #     text = row.map {|tile| encoding_for(tile) }.join('')
-    #     puts "%2d|%s" % [index-5, text]
-    #   end
-    # end
 
     puts '-' * 80
     puts "Legend:"
-    knowns = legend.dup.keep_if {|key, val| KNOWN_TILES.values.include? val }
-    unknowns = legend.dup.delete_if {|key, val| KNOWN_TILES.values.include? val }
+    knowns = legend.dup.keep_if {|key, val| known_tiles.values.include? val }
+    unknowns = legend.dup.delete_if {|key, val| known_tiles.values.include? val }
     puts "Known Tiles: "
-    puts knowns.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
+    puts knowns.invert.map {|key,val| "#{'%s' % key}:#{val}" }.join(', ')
     puts "Unknown Tiles: "
-    puts unknowns.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
+    puts unknowns.invert.map {|key,val| "#{key.on_red}:#{val}" }.join(', ')
     puts '-' * 80
   end
 
