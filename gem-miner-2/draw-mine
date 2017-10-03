@@ -89,8 +89,9 @@ class Mine
     20 => ['g'.white.on_black, "Guano (9)"],
     28 => ['u'.light_green.on_black, "Uranium (32)"],
     30 => ['o'.white.on_light_black, "White Opal (19)"],
+    35 => ['t'.white.on_black, "Tin (7)"],
     38 => ['b'.yellow.on_black, "Bauxite (10)"],
-    41 => ['o'.green.on_black, "Green Opal (??)"],
+    41 => ['o'.green.on_black, "Green Opal (21)"],
     42 => ['g'.light_black.on_black, "Graphite (12)"],
     43 => ['g'.white.on_yellow, "Gold (37)"],
     45 => ['d'.cyan.on_black, "Diamond (45)"],
@@ -151,11 +152,12 @@ class Mine
     135 => [MARBLE, "Temple Marble"],
     136 => [OPEN_CAVERN, "Open (Light Shaft)"],
     137 => [OPEN_CAVERN, "Open (Foliage)"],
-    138 => ['s'.light_yellow.on_black, "Sulfer (17)"],
+    138 => ['s'.light_yellow.on_black, "Sulfur (17)"],
     139 => ['#'.light_red.on_black, "Breakable Wall"],
     140 => [OPEN_CAVERN, "Open (Palm Frond)"],
     141 => ['_'.white.on_red, "Trap Plate"],
     142 => [OPEN_CAVERN, "Open (Skulls on Spikes)"],
+    149 => ['m'.light_magenta.on_black, "Mica (5)"],
     151 => [OPEN_CAVERN, "Open (Foliage)"],
     153 => [OPEN_CAVERN, "Open (Foliage)"],
     154 => ['J'.light_green.on_green, "Jade Skull"],
@@ -167,6 +169,7 @@ class Mine
     165 => [OPEN_CAVERN, "Open (Foliage)"],
     166 => [OPEN_CAVERN, "Open (Foliage)"],
     167 => [OPEN_CAVERN, "Open (Coral)"],
+    168 => ['j'.light_green.on_green, "Jade Skull Fragment"],
   }
 
   def initialize xml
