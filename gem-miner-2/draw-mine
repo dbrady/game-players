@@ -86,11 +86,12 @@ class Mine
     16 => ['v'.black.on_light_black, "Bat"],
     18 => [OPEN_CAVERN, "Mushrooms"],
     19 => [OPEN_CAVERN, "Hanging Vines"],
-    20 => ['g'.white.on_black, "Guano, 9"],
+    20 => ['g'.white.on_black, "Guano (9)"],
+    28 => ['u'.light_green.on_black, "Uranium (32)"],
     30 => ['o'.white.on_light_black, "White Opal (19)"],
     38 => ['b'.yellow.on_black, "Bauxite (10)"],
     41 => ['o'.green.on_black, "Green Opal (??)"],
-    42 => ['g'.light_blue.on_black, "Graphite (12)"],
+    42 => ['g'.light_black.on_black, "Graphite (12)"],
     43 => ['g'.white.on_yellow, "Gold (37)"],
     45 => ['d'.cyan.on_black, "Diamond (45)"],
     49 => ['c'.white.on_black, "Coal (6)"],
@@ -130,9 +131,12 @@ class Mine
     106 => [LIFT.red, "Lift (Broken)"],
     107 => [OPEN_CAVERN, "Open"],
     110 => ['%'.light_yellow.on_yellow, "Map"],
+    111 => ['L'.light_yellow.on_red, "Lava"],
     114 => ['='.light_yellow.on_light_black, "Walkway (Charred)"],
     115 => ['Q'.light_yellow.on_cyan, "Quest Giver"],
     120 => ['a'.blue.on_black, "Azurite (8)"],
+    122 => ['n'.white.on_black, "Nickel (5)"],
+    123 => ['b'.white.on_black, "Borax (11)"],
     124 => [OPEN_CAVERN, "Open (Foliage)"],
     125 => [OPEN_CAVERN, "Open (Foliage)"],
     126 => [OPEN_CAVERN, "Open (Foliage)"],
@@ -147,6 +151,8 @@ class Mine
     135 => [MARBLE, "Temple Marble"],
     136 => [OPEN_CAVERN, "Open (Light Shaft)"],
     137 => [OPEN_CAVERN, "Open (Foliage)"],
+    138 => ['s'.light_yellow.on_black, "Sulfer (17)"],
+    139 => ['#'.light_red.on_black, "Breakable Wall"],
     140 => [OPEN_CAVERN, "Open (Palm Frond)"],
     141 => ['_'.white.on_red, "Trap Plate"],
     142 => [OPEN_CAVERN, "Open (Skulls on Spikes)"],
@@ -160,6 +166,7 @@ class Mine
     162 => [OPEN_CAVERN, "Open (Foliage)"],
     165 => [OPEN_CAVERN, "Open (Foliage)"],
     166 => [OPEN_CAVERN, "Open (Foliage)"],
+    167 => [OPEN_CAVERN, "Open (Coral)"],
   }
 
   def initialize xml
@@ -205,12 +212,10 @@ class Mine
     map_layers.find {|layer| layer["name"] == "objects" }
   end
 
-  def render
-    render_node doc.children.first
-  end
-
   def describe_node node
     desc = node.name
+    desc += " type: #{node['type']}" if node.name == 'object'
+    desc += " (#{node['x']}x#{node['y']})" if node['type'] == 'insect'
     if node["name"]
       desc += ": #{node['name']}"
       if node["value"]
@@ -220,6 +225,12 @@ class Mine
       end
     end
     desc
+  end
+
+  def render
+    banner doc.children.size
+    banner doc.children.first.name
+    render_node doc.children.first
   end
 
   def render_node node, indent=1
@@ -330,11 +341,8 @@ end
 
 if __FILE__==$0
   mine = Mine.load ARGV[0]
-  mine.map_layers.each do |map_layer|
-    puts "%s: %sx%s" % [ map_layer["name"], map_layer["width"], map_layer["height"]]
-  end
-
   puts "Mine: (#{mine.width}x#{mine.height})"
 
   mine.draw_map
+  #puts mine.render
 end
