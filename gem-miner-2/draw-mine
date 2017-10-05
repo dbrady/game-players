@@ -245,6 +245,38 @@ class Mine
     168 => Label.new('j'.light_green.on_green, "Jade Skull Fragment"),
   }
 
+  # Unmapped objects - These are objects but they do not appear in the objects
+  # map. Specifically, they appear as <object name="?"> instead of IDs in the
+  # grid of <layer name="objects">.
+  #
+  # But... what about collisions?
+  INSECT = '%'.on_light_black
+  UNMAPPED_OBJECTS = {
+    :locked_teleport => Label.new(TELEPORT.red.on_black, "Teleporter (Locked)"),
+    :mosquito => Label.new(INSECT.light_red, "Mosquito"),
+    # Let's not map these as they are harmless. Bees and beetles are quest
+    # targets in like ONE map in the rainforest, but other than that they are
+    # functionally identical to OPEN_CAVERN. Then again, maybe show them anyway?
+    #
+    # mosquitos are insect subtype 4 maybe
+    # bees are insect subtype 8 maybe
+
+    :bee => Label.new(INSECT.light_yellow, "Bee (10)"),
+    :beehive => Label.new('B'.light_yellow.on_light_black, "Beehive"),
+    :beetle => Label.new(INSECT.green, "Beetle"),
+    :frog => Label.new('f'.green.on_light_black, "Frog"),
+    :wheel => Label.new('@'.yellow.on_black, "Puzzle Wheel"),
+    :pedestal => Label.new('P'.light_green.on_green, "Jade Pedestal"),
+    :miner => Label.new('&'.cyan.on_light_black, "Miner"),
+    :harold => Label.new('h'.cyan.on_light_black, "Harold"),
+    # <object type="miner"> with <property name="subtype" value="5"> is Harold
+    # miner subtype 9 is Dr. Lavinia Stone
+
+    # Harold appears in s_rain_temple_e3.xml
+    # Dr. Lavinia Stone appears in s_rain_four.xml
+    :lavinia => Label.new('l'.cyan.on_light_black, "Dr. Lavinia Stone"),
+  }
+
   def initialize xml
     @doc = Nokogiri::XML xml
     @legend = {}
@@ -256,11 +288,15 @@ class Mine
   end
 
   def known_legend
-    legend.dup.keep_if {|key, val| known_tiles.values.include? val }
+    legend.dup.keep_if {|key, val| known_legend_value? val }
+  end
+
+  def known_legend_value? val
+    known_tiles.values.include?(val) || UNMAPPED_OBJECTS.values.include?(val)
   end
 
   def known_geology_legend
-    leg = legend.dup.keep_if {|key, val| known_tiles.values.include?(val) && !val.ore? }
+    leg = legend.dup.keep_if {|key, val| known_legend_value?(val) && !val.ore? }
     dedup = Hash[leg.map {|tile, label| [label.symbol, [tile, label]]}]
     Hash[
       dedup.map {|symbol, data| data }
@@ -268,11 +304,11 @@ class Mine
   end
 
   def known_ore_legend
-    legend.dup.keep_if {|key, val| known_tiles.values.include?(val) && val.ore? }
+    legend.dup.keep_if {|key, val| known_legend_value?(val) && val.ore? }
   end
 
   def unknown_legend
-    legend.dup.delete_if {|key, val| known_tiles.values.include? val }
+    legend.dup.delete_if {|key, val| known_legend_value? val }
   end
 
 
@@ -340,7 +376,7 @@ class Mine
   end
 
   def known_tile? tile
-    known_tiles.key? tile
+    known_tiles.key?(tile)
   end
 
   def encoding_for tile
@@ -373,6 +409,8 @@ class Mine
   end
 
   def tile_at(x, y)
+    # UGH, REFACTOR ME ALREADY - I return the tile at x, y but I *also* lazily
+    # update the legend!
     object = map_data["objects"][y][x]
     return object unless object == 0
     map_data["main"][y][x]
@@ -382,7 +420,11 @@ class Mine
     height.times do |y|
       width.times do |x|
         tile = tile_at x, y
-        display = encoding_for tile
+        if tile.is_a? Integer
+          display = encoding_for tile
+        else
+          display = UNMAPPED_OBJECTS[:tile]
+        end
       end
     end
   end
@@ -399,7 +441,11 @@ class Mine
       print "#{index_format}|" % (y-4)
       width.times do |x|
         tile = tile_at x, y
-        display = encoding_for tile
+        if tile.is_a? Integer
+          display = encoding_for tile
+        else
+          display = UNMAPPED_OBJECTS[tile]
+        end
         print "%s" % display
       end
       puts "|#{index_format}  %s" % [(y-4), side_legend.next_line]
@@ -423,25 +469,6 @@ class Mine
     #   end
     #   puts "|%2d" % (y-4)
     # end
-  end
-
-  def draw_map_old
-    map_layers.each do |map|
-      puts "#{map.name} #{map['name']}:"
-      data = map.xpath("data").children.first
-      data.inner_text.each_line.with_index do |row, index|
-        row.sub(/,$/, '')
-        nums = row.split(/,/).map(&:to_i)
-        nums.pop if nums.size == width+1
-        next if nums.size != width
-        row = nums.map {|num| encoding_for(num)}.join('')
-        puts "%2d|%s" % [index-5, row]
-      end
-    end
-
-    puts '-' * 80
-    puts legend.invert.map {|key,val| "#{key}:#{val}" }.join(', ')
-    puts '-' * 80
   end
 end
 
