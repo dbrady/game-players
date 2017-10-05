@@ -35,26 +35,89 @@ def banner *objects, &block
 end
 
 class Label
-  attr_reader :name
+  include Comparable
+  attr_reader :symbol, :name
 
-  def initialize name
-    @name = name
+  # These constants affect sort order of Labels
+  LABEL = 0
+  ORE = 1
+  UNKNOWN = 2
+
+  def initialize symbol, name
+    @symbol, @name = symbol, name
   end
 
   def ore?
-    name =~ /\([d\?]+\)$/
+    name =~ /\([\d]+\)$/
   end
 
   def type
-    ore? ? "ore" : "label"
+    return UNKNOWN unless name
+    ore? ? ORE : LABEL
+  end
+
+  def type_name
+    case type
+    when LABEL then "LABEL"
+    when ORE then "ORE"
+    when UNKNOWN then "UNKNOWN"
+    end
   end
 
   def <=> other
-    [type, name] <=> [other.type, other.name]
+    if ore? && other.ore?
+      value <=> other.value
+    else
+      [type, name] <=> [other.type, other.name]
+    end
+  end
+
+  def value
+    return 0 unless ore?
+    name[/\d+/].to_i
   end
 
   def to_s
-    name
+    "%s" % symbol
+  end
+end
+
+class Legend
+  attr_reader :mine, :lines
+  def initialize mine
+    @mine = mine
+    @lines = [
+      "Known Geology:",
+      *mine.known_geology_legend.values.sort,
+      "",
+      "Known Ores:",
+      *mine.known_ore_legend.values.sort,
+      "",
+      "Unknown Tiles:",
+      *mine.unknown_legend.values.sort
+    ]
+  end
+
+  # Returns the next line to render for a vertical legend.
+  # Given n known tiles and m unknown tiles,
+  #
+  # Line 0 is always "Known Tiles:"
+  # Lines 1..n are the known tiles, sorted by type and name
+  # Line n+1 is blank
+  # Lines n+2 is always "Unknown Tiles:"
+  # Lines n+3..n+3+m are the unknown tiles, sorted by symbol
+  def next_line
+    @line_enum ||= @lines.each
+    begin
+      label = @line_enum.next
+      if label.respond_to? :name
+        "%s: %s" % [label.symbol, label.name]
+      else
+        label
+      end
+    rescue StopIteration
+      ""
+    end
   end
 end
 
@@ -64,7 +127,7 @@ class Mine
   TILESET = [*'0'..'9', *'a'..'z', *'A'..'Z']
 
   EMPTY = ' '
-  IMPASSABLE = '#'
+  IMPASSABLE = '@'
   PORTAL = '@'
   BOULDER = 'O'
   OPEN_CAVERN = EMPTY.on_light_black
@@ -87,20 +150,28 @@ class Mine
     18 => [OPEN_CAVERN, "Mushrooms"],
     19 => [OPEN_CAVERN, "Hanging Vines"],
     20 => ['g'.white.on_black, "Guano (9)"],
+    25 => ['F'.light_yellow.on_yellow, "Fossilized Claw"],
+    27 => ['F'.light_yellow.on_yellow, "Fossilized Vertebra"],
     28 => ['u'.light_green.on_black, "Uranium (32)"],
+    29 => ['t'.light_blue.on_black, "Topaz (22)"],
     30 => ['o'.white.on_light_black, "White Opal (19)"],
+    33 => ['F'.light_yellow.on_yellow, "Fossilized Triceratops Skull"],
+    34 => ['F'.light_yellow.on_yellow, "Fossilized Femur"],
     35 => ['t'.white.on_black, "Tin (7)"],
     38 => ['b'.yellow.on_black, "Bauxite (10)"],
+    40 => ['o'.black.on_white, "Black Opal (25)"],
     41 => ['o'.green.on_black, "Green Opal (21)"],
     42 => ['g'.light_black.on_black, "Graphite (12)"],
     43 => ['g'.white.on_yellow, "Gold (37)"],
     45 => ['d'.cyan.on_black, "Diamond (45)"],
+    47 => ['c'.yellow.on_black, "Copper (15)"],
     49 => ['c'.white.on_black, "Coal (6)"],
     51 => ['I'.yellow.on_black, "Iron (14)"],
-    53 => ['m'.light_red.on_black, "Manganese (??)"],
+    53 => ['m'.light_red.on_black, "Manganese (999)"],
     54 => ['a'.light_red.on_black, "Amethyst (28)"],
     55 => ['F'.light_yellow.on_yellow, "Fossil"],
     56 => [LIFT, "Lift Shaft"],
+    57 => [LIFT.bold, "Lift Car"],
     58 => [OPEN_CAVERN, "Open (Broken Stalagmite)"],
     59 => ['%'.magenta.on_light_black, "Coal Gas"],
     60 => [OPEN_CAVERN, "Open (Stalagmite)"],
@@ -125,11 +196,12 @@ class Mine
     85 => ['#'.red.on_light_black, "Danger Sign"],
     90 => ["|".red.on_light_black, "Door"],
     94 => ['%'.light_yellow.on_yellow, "Scroll"],
+    97 => ['d'.magenta.on_light_magenta, "Pink Diamond (50)"],
     98 => ["j".green.on_black, "Jade (24)"],
     99 => [MARBLE, "Temple Marble"],
     100 => [MARBLE, "Temple Marble"],
     105 => [OPEN_CAVERN, "Open (Cobweb)"],
-    106 => [LIFT.red, "Lift (Broken)"],
+    106 => [LIFT.red, "Lift Car (Broken)"],
     107 => [OPEN_CAVERN, "Open"],
     110 => ['%'.light_yellow.on_yellow, "Map"],
     111 => ['L'.light_yellow.on_red, "Lava"],
@@ -181,9 +253,30 @@ class Mine
   def known_tiles
     @known_tiles ||= Hash[
       KNOWN_TILES.map {|num, data|
-        [num, [data.first, Label.new(data.last)]]
+        [num, Label.new(*data)]
       }]
   end
+
+  def known_legend
+    legend.dup.keep_if {|key, val| known_tiles.values.include? val }
+  end
+
+  def known_geology_legend
+    leg = legend.dup.keep_if {|key, val| known_tiles.values.include?(val) && !val.ore? }
+    dedup = Hash[leg.map {|tile, label| [label.symbol, [tile, label]]}]
+    Hash[
+      dedup.map {|symbol, data| data }
+    ]
+  end
+
+  def known_ore_legend
+    legend.dup.keep_if {|key, val| known_tiles.values.include?(val) && val.ore? }
+  end
+
+  def unknown_legend
+    legend.dup.delete_if {|key, val| known_tiles.values.include? val }
+  end
+
 
   def self.load file
     Mine.new(File.open(file))
@@ -256,7 +349,7 @@ class Mine
     legend[tile] ||= if known_tile? tile
                        known_tiles[tile]
                      else
-                       tileset.shift
+                       Label.new(tileset.shift.to_s.white.on_red, "Uknown")
                      end
   end
 
@@ -275,7 +368,6 @@ class Mine
         nums = row.split(/,/).map(&:to_i)
         nums.pop if nums.size == width+1
         next if nums.size != width
-        # row = nums.map {|num| encoding_for(data, num)}
         map_data[layer] << nums
       end
     end
@@ -288,26 +380,39 @@ class Mine
     map_data["main"][y][x]
   end
 
-  def draw_map
+  def encode_tiles!
     height.times do |y|
-      print "%2d|" % (y-4)
       width.times do |x|
         tile = tile_at x, y
         display = encoding_for tile
-        display = display.on_red unless known_tile?(tile)
+      end
+    end
+  end
+
+  def index_format
+    digits = 1 + (Math.log([height, width].max) / Math.log(10)).to_i
+    "%#{digits}d"
+  end
+
+  def draw_map
+    encode_tiles!
+    side_legend = Legend.new self
+    height.times do |y|
+      print "#{index_format}|" % (y-4)
+      width.times do |x|
+        tile = tile_at x, y
+        display = encoding_for tile
         print "%s" % display
       end
-      puts "|%2d" % (y-4)
+      puts "|#{index_format}  %s" % [(y-4), side_legend.next_line]
     end
 
     puts '-' * 80
     puts "Legend:"
-    knowns = legend.dup.keep_if {|key, val| known_tiles.values.include? val }
-    unknowns = legend.dup.delete_if {|key, val| known_tiles.values.include? val }
     puts "Known Tiles: "
-    puts knowns.invert.map {|key,val| "#{'%s' % key}:#{val}" }.join(', ')
+    puts known_legend.invert.map {|key,val| "#{'%s' % key}:#{val}" }.join(', ')
     puts "Unknown Tiles: "
-    puts unknowns.invert.map {|key,val| "#{key.on_red}:#{val}" }.join(', ')
+    puts unknown_legend.invert.map {|key,val| "#{'%s' % key}:#{val}" }.join(', ')
     puts '-' * 80
 
     # debug
