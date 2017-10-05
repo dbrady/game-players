@@ -12,7 +12,7 @@
 #
 # TODO
 # - [ ] Finish all the ore types and their values
-# - [ ] Parse teleporters and put them on the map (see rainforest 7)
+# - [ ] Parse teleporters and put them on the map (see s_rain_temple_e3.xml)
 # - [ ] Render the legend down the right side of the map (provide cmd-line option
 #   to disable it)
 # - [ ] Render the map as raw/debug values for those times when I don't know why
@@ -128,7 +128,7 @@ class Mine
 
   EMPTY = ' '
   IMPASSABLE = '@'
-  PORTAL = '@'
+  TELEPORT = '@'
   BOULDER = 'O'
   OPEN_CAVERN = EMPTY.on_light_black
   LIFT = 'L'.white.on_light_black
@@ -182,8 +182,8 @@ class Mine
     66 => ['.'.light_red.on_black, "Cave-in Dirt"],
     67 => ['#'.light_yellow.on_black, "Ladder"],
     68 => ['#'.light_yellow.on_light_black, "Ladder (Charred)"],
-    69 => [PORTAL.black.on_cyan, "Teleport (Way Out)"],
-    70 => [PORTAL.cyan.on_light_black, "Teleport (Intramine)"],
+    69 => [TELEPORT.black.on_cyan, "Teleport (Way Out)"],
+    70 => [TELEPORT.cyan.on_light_black, "Teleport (Intramine)"],
     71 => ["W".white.on_cyan, "Temple Pool"],
     72 => [OPEN_CAVERN, "Open"],
     73 => [OPEN_CAVERN, "Open (Torch)"],
