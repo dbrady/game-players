@@ -1,7 +1,11 @@
 # Gem Miner 2
 
 This tool renders maps from the Android game Gem Miner 2 to ASCII color text on
-a console. Gem Miner 2 is a free game from Psym Mobile that you absolutely
+a console.
+
+![screenshot](https://user-images.githubusercontent.com/28605/31259758-76a0c4b2-aa06-11e7-9e4a-6046be31161f.png)
+
+Gem Miner 2 is a free game from Psym Mobile that you absolutely
 should get and purchase all of the expansion packs for. The game is a bit dated
 but is still highly playable.
 
