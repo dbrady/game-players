@@ -1,0 +1,27 @@
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+
+Style/Documentation:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+Metrics/ClassLength:
+  Enabled: true
+  Max: 25
+
+Metrics/ModuleLength:
+  Enabled: true
+  Max: 25
+
+Metrics/MethodLength:
+  Enabled: true
+  Max: 5
+
+# This is already the default in 0.51.0 but I want to state it explicitly
+Metrics/ParameterLists:
+  Enabled: true
+  Max: 5
