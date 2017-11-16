@@ -37,13 +37,6 @@ Metrics/ParameterLists:
 # Style/ParallelAssignment:
 #   Enabled: false
 
-# Because I'm not adding parens to "assert_match /regexp/, expr" when the rest
-# of the codebase favors NOT using parens
-Lint/AmbiguousRegexpLiteral:
-  Enabled: true
-  Exclude:
-    - 'test/**/*_test.rb'
-
 # Because RuboCop is just plain WRONG about this, ESPECIALLY for multiline ifs
 Style/NegatedIf:
   Enabled: false

@@ -32,6 +32,6 @@ class CellTest < MiniTest::Test
     error = assert_raises ArgumentError do
       Cell.parse('?')
     end
-    assert_match /must be one of '#', ' ', or '.'/, error.message
+    assert_match(/must be one of '#', ' ', or '.'/, error.message)
   end
 end
