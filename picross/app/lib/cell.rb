@@ -5,7 +5,8 @@ class Cell
   STATE_OFF = ' '.freeze
   STATE_UNKNOWN = '.'.freeze
 
-  # STATES = [STATE_ON, STATE_OFF, STATE_UNKNOWN].freeze
+  STATES = [STATE_ON, STATE_OFF, STATE_UNKNOWN].freeze
+
   attr_reader :state
 
   def initialize(state)
@@ -13,7 +14,9 @@ class Cell
   end
 
   def self.parse(state)
-    # raise ArgumentError unless state.in? STATES
+    if !STATES.include? state
+      raise ArgumentError, "state must be one of '#', ' ', or '.'"
+    end
     Cell.new state
   end
 
