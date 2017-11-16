@@ -2,6 +2,7 @@
 - [ ] Find out if it is possible to ally with the Thalmor (e.g. play as Altmer)
 - [ ] Find a pretty argonians mod? Almost certainly! NexusMods is 90% T&A
   anyway.
+- [ ]
 
 ** Dawnguard-Specific [1/2]
 - [X] Find out: is it possible to marry Serana? TL;DR No. Longer: yes, with
