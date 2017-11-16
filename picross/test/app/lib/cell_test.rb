@@ -27,4 +27,8 @@ class CellTest < MiniTest::Test
   def test_render
     assert_equal '#', Cell.parse('#').to_s
   end
+
+  def test_parse_with_bad_state_raises_error
+    assert_raises ArgumentError, Cell.parse('?')
+  end
 end
