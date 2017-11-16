@@ -6,10 +6,10 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
-task test: :rubocop
+task all: %i[rubocop test]
 
 task :rubocop do
-  sh 'rubocop -D'
+  sh 'rubocop -DS'
 end
 
-task default: :test
+task default: :all
