@@ -25,3 +25,14 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Enabled: true
   Max: 5
+
+# Because Boards have forced indentation and I'm not using heredocs as
+# documentation
+# Layout/IndentHeredoc:
+#   Enabled: false
+
+
+# I only ever use parallel assignment in constructors, but I ALWAYS use them in
+# constructors. I wish I could change the cop to allow it only in constructors
+# Style/ParallelAssignment:
+#   Enabled: false
