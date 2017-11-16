@@ -43,3 +43,7 @@ Lint/AmbiguousRegexpLiteral:
   Enabled: true
   Exclude:
     - 'test/**/*_test.rb'
+
+# Because RuboCop is just plain WRONG about this, ESPECIALLY for multiline ifs
+Style/NegatedIf:
+  Enabled: false
