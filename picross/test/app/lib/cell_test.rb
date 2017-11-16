@@ -19,4 +19,12 @@ class CellTest < MiniTest::Test
     refute Cell.parse('.').off?
     assert Cell.parse('.').unknown?
   end
+
+  # Q: Should I test all three constructors if I know that render has exactly
+  #    one code path, that grabs the state?
+  # Q: If I only test this one path, should I explicitly test that it's getting
+  #    the state?
+  def test_render
+    assert_equal '#', Cell.parse('#').to_s
+  end
 end

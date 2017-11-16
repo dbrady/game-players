@@ -28,4 +28,8 @@ class Cell
   def unknown?
     !on? && !off?
   end
+
+  def to_s
+    state
+  end
 end
