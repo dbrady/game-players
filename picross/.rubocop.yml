@@ -36,3 +36,10 @@ Metrics/ParameterLists:
 # constructors. I wish I could change the cop to allow it only in constructors
 # Style/ParallelAssignment:
 #   Enabled: false
+
+# Because I'm not adding parens to "assert_match /regexp/, expr" when the rest
+# of the codebase favors NOT using parens
+Lint/AmbiguousRegexpLiteral:
+  Enabled: true
+  Exclude:
+    - 'test/**/*_test.rb'
