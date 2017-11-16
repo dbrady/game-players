@@ -11,11 +11,11 @@ Style/Documentation:
 
 Metrics/ClassLength:
   Enabled: true
-  Max: 25
+  Max: 100
 
 Metrics/ModuleLength:
   Enabled: true
-  Max: 25
+  Max: 100
 
 Metrics/MethodLength:
   Enabled: true
