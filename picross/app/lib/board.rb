@@ -8,6 +8,6 @@ class Board
   end
 
   def self.parse(_string)
-    Board.new(1, 1, [["#"]])
+    Board.new(1, 1, [['#']])
   end
 end

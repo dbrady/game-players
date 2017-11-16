@@ -1,5 +1,5 @@
-require_relative "../../test_helper"
-require "app/lib/board"
+require_relative '../../test_helper'
+require 'app/lib/board'
 
 class BoardTest < MiniTest::Test
   # rubocop: disable Layout/IndentHeredoc

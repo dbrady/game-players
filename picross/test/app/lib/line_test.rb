@@ -1,9 +1,9 @@
-require_relative "../../test_helper"
-require "app/lib/line"
+require_relative '../../test_helper'
+require 'app/lib/line'
 
 class LineTest < MiniTest::Test
   def subject
-    Line.new ["?", "?"]
+    Line.new ['?', '?']
   end
 
   def test_size
@@ -11,6 +11,6 @@ class LineTest < MiniTest::Test
   end
 
   def test_to_s
-    assert_equal "??", subject.to_s
+    assert_equal '??', subject.to_s
   end
 end

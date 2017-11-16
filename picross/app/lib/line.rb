@@ -31,6 +31,6 @@ class Line
   end
 
   def to_s
-    cells.map(&:to_s).join ""
+    cells.map(&:to_s).join ''
   end
 end
