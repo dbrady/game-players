@@ -1,0 +1,101 @@
+* Statues [6/19]
+
+- [X] Adventurer: BUILT, Armor +5
+- [X] Gladiator: BUILT, Fire +5
+- [X] Athena: BUILT, Luck +5
+- [X] Spartan: BUILT, Fire +5
+- [X] Magic Golem: BUILT, Armor +5
+- [X] Creator: BUILT, Luck +5
+- [-] Swordsman:
+  - [X] 10 Own Pearls
+  - [X] 1 Priest Pearl
+  - [X] 60 Dark Steel
+  - [ ] 3 Tethys Lv.180
+  - [X] 2 Oceanus Lv.210
+  - [X] 1 Koios Lv.270
+- [-] Bandit:
+  - [ ] 10 Own Pearls
+  - [X] 1 Machinist Pearl
+  - [X] 60 Dark Steel
+  - [ ] 3 Olin Boss Lv.120
+  - [X] 1 Oceanus Lv.210
+  - [ ] 2 Theia Lv.240
+- [-] Mage
+  - [ ] 10 Own Pearls
+  - [-] 1 Death Knight Pearl
+    - [X] Death Knight Lv 5 Weapon
+    - [ ] Death Knight Cert
+    - [X] 30 Death Knight Frags (Loot, Market)
+  - [X] 60 Crystal
+  - [ ] 2 Olin Boss Lv.120
+  - [X] 3 Oceanus Lv.210
+  - [X] 1 Koios Lv.270
+- [-] Minstrel
+  - [ ] 10 Own Pearls
+  - [X] 1 Pirate Pearl
+  - [X] 60 Soul Crystal
+  - [ ] 3 Dionie Lv.150
+  - [X] 2 Oceanus Lv.210
+  - [X] 1 Koios Lv.270
+- [-] Alchemist
+  - [ ] 10 Own Pearls
+  - [X] 1 Machine Herald Pearl
+  - [X] 20 Holy Crystal
+  - [X] 2 Oceanus Lv.210
+  - [ ] 3 Theia Lv.240
+  - [X] 2 Mnemosyne Lv.300
+- [-] Pirate
+  - [ ] 10 Own Pearls
+  - [ ] 1 Witch Pearl
+  - [X] 60 Dark Steel
+  - [ ] 3 Tethys Lv.180
+  - [X] 2 Koios Lv.270
+  - [X] Iapetos Lv.330
+- [ ] Priest
+  - [ ] Trial - Can't outlast Boss under Curse. Need 350-400 HP
+- [ ] Bounty Hunter
+  - [ ] Weapon Lv 5
+  - [ ] Max Out Feeding (All)
+  - [ ] Trial
+- [ ] Hellfire
+  - [ ] Weapon Lv 5
+  - [ ] Max Out Feeding (Lv 5)
+  - [ ] Trial
+- [-] Odin
+  - [X] Weapon Lv 5
+  - [X] Max out Feeding
+  - [X] Trial - 31/37/425/325; 15/27/305/275 -> 37/36/480/320
+  - [ ] 10 Own Pearl
+  - [ ] 1 Red Dragon Pearl
+  - [ ] 40 Arcane Crystal
+  - [ ] 3 Theia Lv.240
+  - [X] 3 Mnemosyne Lv.300
+  - [X] 2 Phoebe Lv.360
+- [-] Holy Warrior
+  - [X] Weapon Lv 5
+  - [X] Max out Feeding
+  - [ ] Trial
+- [-] Sage
+  - [ ] 34ATK / 48POW / 405HP / 660MP
+  - [X] Weapon Lv 5
+  - [X] Max out Feeding
+  - [ ] Trial - Final punchout with Boss kills me off w/Boss still at 400HP
+    - [ ] MGT&T video has Sage at 34ATK, 48POW, 405HP, 660MP
+- [-] Prince
+  - [X] Weapon Lv 5
+  - [X] Max Out Feeding (All)
+  - [X] Trial
+  - [ ] 10 Own Pearl
+  - [ ] 1 Dark Dragon's Pearl
+  - [X] 80 Magic Iron
+  - [X] 2 Oceanus Lv.210
+  - [ ] 3 Theia Lv.240
+  - [ ] 2 Hyperion Lv.390
+
+* Finished Trials:
+
+
+
+
+
+Priest

@@ -35,48 +35,29 @@
 #       - sadness - all subtrees of this move are known to fail
 #
 
-require_relative 'spirit_cannons'
-
-class Solver
+class GeneralSolver
   def victory(board, moves)
     puts '-' * 80
-    puts "VICTORY: #{moves * ', '}"
+    puts "VICTORY: #{moves.map(&:inspect).uniq * ', '}"
     puts '-' * 80
   end
 
   def solve(board, moves=[])
     if board.win?
       victory(board, moves)
+      exit
       return true
     end
 
-    if board.out_of_ammo?
+    if board.lose?
       return false
     end
 
     board.possible_moves.each do |move|
-      new_board = SpiritCannons.new(board.to_a, board.shots)
-      new_board.fire(move)
+      new_board = board.dup
+      new_board.move(move)
       new_moves = moves.dup.push move
       solve(new_board, new_moves)
     end
   end
 end
-
-
-# board1 = SpiritCannons.new [ [1, 3], [1, 2] ]
-# Solver.new.solve board1
-
-# board2 = SpiritCannons.new [ [2, 3, 1], [3, 5, 2], [2, 3, 2] ]
-# Solver.new.solve(board2)
-# VICTORY: 6, 2, 3, 4, 4, 5, 5, 5, 5
-
-board3 = SpiritCannons.new [
-  [2, 2, 4, 1],
-  [2, 5, 8, 4],
-  [3, 3, 5, 2],
-  [3, 3, 2, 2],
-]
-Solver.new.solve(board3)
-# So many victories, here's one:
-# VICTORY: 1, 1, 4, 4, 5, 2, 3, 3, 6, 2, 2, 2, 7, 7, 7, 7

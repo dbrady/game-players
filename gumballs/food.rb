@@ -12,7 +12,7 @@ goblins_chocolate = 10 * cream_berry + 45
 # 1. Make Twilight Whisky (45,000 gold x 1 = 45,000)
 #   1.1 Make 10 Bone of Moonlight (9,000 gold x 10 = 90,000)
 #     1.1.1 Make 20 Tower Flower (900 gold x 20 = 18,000)
-#       1.1.1.1 Make 40 Green Gel (360 gold x 40 = 14,400)
+#       1.1.1.1 Make 40 Blue Crystal Gel (360 gold x 40 = 14,400)
 #         1.1.1.1.1 Make 80 Lizard Spawn (750 gold x 80 = 60,000)
 #         1.1.1.1.1 Make 80 Vanilla Flour (750 gold x 80 = 60,000)
 #       1.1.1.2 Make 40 Fairy Spring (360 gold x 40 = 14,400)
@@ -27,7 +27,7 @@ goblins_chocolate = 10 * cream_berry + 45
 #         1.1.2.2.2 Make 80 Magic Bean Pod (750 gold x 80 = 60,000)
 #   1.2 Make 10 Heart of Ancient Tree (9,000 gold x 10 = 90,000)
 #     1.2.1 Make 20 Tower Flower (900 gold x 20 = 18,000)
-#       1.2.1.1 Make 40 Green Gel (360 gold x 40 = 14,400)
+#       1.2.1.1 Make 40 Blue Crystal Gel (360 gold x 40 = 14,400)
 #         1.2.1.1.1 Make 80 Lizard Spawn (750 gold x 80 = 60,000)
 #         1.2.1.1.1 Make 80 Vanilla Flour (750 gold x 80 = 60,000)
 #       1.2.1.2 Make 40 Fairy Spring (360 gold x 40 = 14,400)
@@ -53,7 +53,7 @@ goblins_chocolate = 10 * cream_berry + 45
 # Twilight Whisky: 1
 # Bone of Moonlight: 10
 # Tower Flower: 40
-# Green Gel: 80
+# Blue Crystal Gel: 80
 # Lizard Spawn: 400
 # Vanilla Flour: 320
 # Fairy Spring: 120
@@ -69,10 +69,10 @@ goblins_chocolate = 10 * cream_berry + 45
 # 1. Tap Twilight Whisky
 # 2. Tap Bone of Moonlight
 # 3. Tap Tower Flower
-# 4. Tap Green Gel
+# 4. Tap Blue Crystal Gel
 # 5. Buy 400 Lizard Spawn
 # 6. Buy 320 Vanilla Flour
-# 7. Combine 80 Green Gel
+# 7. Combine 80 Blue Crystal Gel
 # 8. Back out to Tower Flower
 # 9. Tap on Fairy Spring
 # 10. Buy 480 Cream Berry
@@ -213,6 +213,199 @@ class Feeder
     goblins_chocolate: ComplexFoodItem.new(:goblins_chocolate, 45,
                                            [
                                              [SimpleFoodItem.new(:cream_berry, 750), 10]
+                                           ]),
+    bishops_chocolate: ComplexFoodItem.new(:bishops_chocolate, 450,
+                                           [
+                                             [ComplexFoodItem.new(:blue_crystal_gel, 360,
+                                                                  [
+                                                                    [SimpleFoodItem.new(:lizard_spawn, 750), 10],
+                                                                    [SimpleFoodItem.new(:vanilla_flour, 750), 10]
+                                                                  ]
+                                                                 ), 10],
+                                             [ComplexFoodItem.new(:star_mint, 360,
+                                                                  [
+                                                                    [SimpleFoodItem.new(:vanilla_flour, 750), 2],
+                                                                    [SimpleFoodItem.new(:magic_bean_pod, 750), 2]
+                                                                  ]
+                                                                 ), 10],
+                                             [SimpleFoodItem.new(:cream_berry, 750), 20]
                                            ])
   }
+
+  @@food_data = {
+    cream_berry: { gold: 750 },
+    lizards_spawn: { gold: 750 },
+    vanilla_flour: { gold: 750 },
+    magic_bean_pod: { gold: 750 },
+
+    goblins_chocolate: { gold: 45, ingredients: { cream_berry: 10 }},
+    blue_crystal_gel: { gold: 360, ingredients: { lizards_spawn: 2, vanilla_flour: 2 }},
+    star_mint: { gold: 360, ingredients: { vanilla_flour: 2, magic_bean_pod: 2 }},
+    fairy_spring: { gold: 360, ingredients: { cream_berry: 2, magic_bean_pod: 2 }},
+    fantasy_fruit: { gold: 360, ingredients: { cream_berry: 2, lizards_spawn: 2 }},
+
+    bishops_chocolate: {
+      gold: 450,
+      ingredients: {
+        blue_crystal_gel: 10,
+        star_mint: 10,
+        cream_berry: 20
+      }
+    },
+
+    crystal_egg: {
+      gold: 900,
+      ingredients: {
+        blue_crystal_gel: 2,
+        star_mint: 2
+      }
+    },
+
+    elfs_dust: {
+      gold: 900,
+      ingredients: {
+        fantasy_fruit: 2,
+        star_mint: 2
+      }
+    },
+
+    evil_pumpkin: {
+      gold: 900,
+      ingredients: {
+        fantasy_fruit: 2,
+        fairy_spring: 2
+      }
+    },
+
+    tower_flower: {
+      gold: 900,
+      ingredients: {
+        blue_crystal_gel: 2,
+        fairy_spring: 2
+      }
+    },
+
+    miracle_jelly: {
+      gold: 4500,
+      ingredients: {
+        tower_flower: 10,
+        elfs_dust: 10,
+        blue_crystal_gel: 20
+      }
+    },
+
+    unicorns_cheese: {
+      gold: 4500,
+      ingredients: {
+        elfs_dust: 10,
+        crystal_egg: 10,
+        fantasy_fruit: 20
+      }
+    },
+
+    bone_of_moonlight: {
+      gold: 9000,
+      ingredients: {
+        tower_flower: 2,
+        evil_pumpkin: 2
+      }
+    },
+
+    dragons_rib: {
+      gold: 9000,
+      ingredients: {
+        crystal_egg: 2,
+        evil_pumpkin: 2
+      }
+    },
+
+    heart_of_ancient_tree: {
+      gold: 9000,
+      ingredients: {
+        tower_flower: 2,
+        elfs_dust: 2
+      }
+    },
+
+    rainbow_shell: {
+      gold: 9000,
+      ingredients: {
+        tower_flower: 2,
+        crystal_egg: 2
+      }
+    },
+
+    star_scrap: {
+      gold: 9000,
+      ingredients: {
+        elfs_dust: 2,
+        crystal_egg: 2
+      }
+    },
+
+    emperors_chocolate: {
+      gold: 45000,
+      ingredients: {
+        dragons_rib: 10,
+        heart_of_ancient_tree: 10,
+        tower_flower: 20
+      }
+    },
+
+    medusa_brandy: {
+      gold: 45000,
+      ingredients: {
+        bone_of_moonlight: 10,
+        rainbow_shell: 10,
+        tower_flower: 20
+      }
+    },
+
+    mermaid_jam: {
+      gold: 45000,
+      ingredients: {
+        rainbow_shell: 10,
+        star_scrap: 10,
+        evil_pumpkin: 20
+      }
+    },
+
+    starmoon_vodka: {
+      gold: 45000,
+      ingredients: {
+        bone_of_moonlight: 10,
+        star_scrap: 10,
+        elfs_dust: 20
+      }
+    }
+  }
+
+  def self.cost_of(name, running_tab=Hash.new(0))
+    item = @@food_data.fetch name
+    # running_tab[:gold] += item.fetch :gold
+    # item.fetch(:ingredients).each do |ingredient, count|
+    #   running_tab[ingredient] += count
+    # end
+    total_cost = item.fetch(:gold) + item.fetch(:ingredients, {})
+                                     .each_pair
+                                     .map {|item_name, quantity| cost_of(item_name) * quantity }
+                                     .reduce(0, &:+)
+  end
 end
+
+# Brenda 20221188036
+
+# Reagan in claims
+
+puts Feeder.cost_of :starmoon_vodka
+puts "-" * 20
+puts Feeder.cost_of :mermaid_jam
+puts "-" * 20
+puts Feeder.cost_of :medusa_brandy
+puts "-" * 20
+puts Feeder.cost_of :emperors_chocolate
+puts "-" * 20
+puts Feeder.cost_of :unicorns_cheese
+puts "-" * 20
+puts Feeder.cost_of :miracle_jelly
+puts "-" * 20
