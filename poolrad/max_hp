@@ -1,0 +1,170 @@
+#!/usr/bin/env ruby
+
+# max_hp - calculate the max HP for a character given their constitution and
+# class level(s)
+#
+
+def short_usage
+  short =<<HERE_YOU_GO
+max_hp - calculate max HP for character, per AD&D rules (*FIRST* Edition,
+Specifically as implemented by Pool of Radiance!)
+
+Usage:
+max_hp [options] <constitution> <class><level> [<class><level> [...]]
+
+Use max_hp -h or max_hp --help for more help.
+HERE_YOU_GO
+end
+
+def usage
+  usage =<<HOW_DO_I_EVEN
+#{short_usage}
+
+Examples:
+
+Let's say your 3rd level Fighter has a constitution of 17. What the max HP they
+could have? That would be (1d10+3)*3 = 39, so:
+
+max_hp 17 F3
+A level 3 Fighter with a constitution of 17 can have a maximum of 39 hit points.
+
+Now let's say your Half-Elven Cleric/Fighter/Magic-User has a constitution of 18
+and 3500xp, making her a 3rd-level Cleric, a 2nd-level Fighter, and a 2nd-level
+Mage. That would be ((1d8+2)*3 + (1d10+4)*2 + (1d4+2)*2)/3 => 23.333, so:
+
+max_hp 18 C3 F2 M3
+A level 3/2/2 Cleric/Fighter/Magic-User with a constitution of 18 can have a
+maximum of 23 hit points.
+
+Options:
+
+-h, --help: SHow this full help screen
+
+None. I was originally going to support dual-classing versus multi-classing, but
+at thi time of this writing I'm still only starting out in Pool of Radiance
+which ONLY supports multi-classing. I may add Dual-Classing support once I get
+to the sequel, as I hear that Curse of the Azure Bonds does in fact allow it.
+
+Eventually this could be -m or -d and is only necessary if you have exactly 2
+classes (since humans can't triple-class). So eventually if your human
+Fighter/Magic-User is 3rd/7th level (max HP of 39 from the fighter levels,
+then 0hp from Mage levels 1-3, then max HP of 6 per mage level from 4 to 7 for a
+grand total of 63), you could say:
+
+max_hp -d 18 F3 M7 # REMINDER: THIS OPTION DOES NOT YET EXIST
+A level 3/7 Fighter/Magic-User with a constitution of 18 could have a maximum of
+63 hit points.
+
+That character would need 4000xp + 90000xp, so now let's say you have an Elven
+Fighter/Magic-User with 47,000xp. NOTE: THIS PROGRAM DOES NOT CONSIDER RACIAL
+LEVEL LIMITS, EITHER, BECAUSE LOL, and also because Pool of Radiance doesn't
+*quite* follow the handbook anyway, but whatever, Elves can reach 5-7th level as
+Fighters and 9-11th level as Magic-Users, and either way this character can in
+fact reach F5 M5, which would be ((1d10+4)*5 + (1d4+2)*5) / 2
+
+max_hp -m 18 F5 M5
+A level 5/5 Fighter/Magic-user with a constitution of 18 could have a maximum of
+50 hit points.
+HOW_DO_I_EVEN
+end
+
+argv = ARGV.dup
+
+if argv.include?('-h') || argv.include?('--help')
+  puts usage
+  exit 1
+end
+
+if argv.size < 2
+  puts "Program needs at least constitution and one level specification"
+  puts short_usage
+  exit 1
+end
+
+constitution = argv.shift.to_i
+if constitution < 3 || constitution > 19 # I can't remember if CON 19 is legit in PoR or not?
+  puts "First argument must be constitution value 3-18"
+  puts short_usage
+  exit 1
+end
+
+def describe_klass(klass)
+  {
+    "C" => "Cleric",
+    "F" => "Fighter",
+    "M" => "Magic-User",
+    "T" => "Thief"
+  }[klass]
+end
+
+levels = argv
+hit_dice = Hash.new 0
+levels.each.with_index do |level, index|
+  if level !~ /^[CMFT][1-8]$/
+    puts <<YOU_SCREWED_IT_ALL_UP
+Level identifier #{index+1}, '#{level}' is invalid. It must be:
+1. Exactly two characters (#{level.size})
+2. Begin with C, M, F or T (#{(level =~ /^[CMFT]/) ? 'Yes':'No'})
+3. End with a level number between 1 and 8 (#{(level[1..-1] =~ /^[1-8]$/) ? 'Yes':'No'})
+YOU_SCREWED_IT_ALL_UP
+    puts short_usage
+    exit 1
+  end
+  klass, dice = level[0], level[1].to_i
+  if hit_dice.has_key?(klass)
+    klass_name = describe_klass(klass)
+    puts <<AWW_SNAP
+Level identifier #{index+1}, '#{level}', defines #{klass_name} level #{dice}, but you
+have already specified that the character is a level #{hit_dice[klass]} #{klass_name}.
+Please specify class levels at one time at most.
+AWW_SNAP
+    puts short_usage
+    exit 1
+  end
+  hit_dice[klass] = dice
+end
+
+dice = hit_dice.values.join('/')
+klasses = hit_dice.keys.map {|k| describe_klass(k) }.join('/')
+
+puts "Okay, we're generating hit points for a level #{dice} #{klasses}"
+
+def hit_dice_per_class(klass)
+  {
+    "C" => 8,
+    "F" => 10,
+    "M" => 4,
+    "T" => 6
+  }[klass]
+end
+
+def con_bonus_per_class(klass, constitution)
+  {
+    "C" => {3 => -2, 4 => -1, 5 => -1, 6 => -1, 15 => 1, 16 => 2, 17 => 2, 18 => 2 },
+    "F" => {3 => -2, 4 => -1, 5 => -1, 6 => -1, 15 => 1, 16 => 2, 17 => 3, 18 => 4 },
+    "M" => {3 => -2, 4 => -1, 5 => -1, 6 => -1, 15 => 1, 16 => 2, 17 => 2, 18 => 2 },
+    "T" => {3 => -2, 4 => -1, 5 => -1, 6 => -1, 15 => 1, 16 => 2, 17 => 2, 18 => 2 },
+  }.fetch(klass).fetch(constitution, 0)
+end
+
+num_classes = hit_dice.size
+
+def describe_hit_dice(klass, constitution)
+  sprintf("1d%d%+d" % [
+            hit_dice_per_class(klass),
+            con_bonus_per_class(klass, constitution)
+          ])
+end
+
+print "(" if hit_dice.size > 1
+print hit_dice.map {|klass, level|
+  "(#{describe_hit_dice(klass, constitution)})*#{level}"
+}.join(" + ")
+print ")/#{hit_dice.size}" if hit_dice.size > 1
+puts
+
+max_hp = (hit_dice.map {|klass, level|
+            (hit_dice_per_class(klass) + con_bonus_per_class(klass, constitution)) * level
+          }.reduce(&:+).to_f / hit_dice.size).to_i
+
+puts "A level #{dice} #{klasses} with a constitution of #{constitution} can have a maximum of #{max_hp} hit points."
