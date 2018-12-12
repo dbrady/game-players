@@ -13,8 +13,6 @@ poolrad = Poolrad.new
 poolrad.assert_game_configuration!
 poolrad.assert_save_game_exists! id
 
-filename = File.join poolrad.game_path, "CHRDAT#{ARGV[0]}.SAV"
-
 data = File.open(poolrad.save_filepath(id), "rb").read
 name = data[1..15].unpack("A*").first
 max_hp = data[50].unpack("C").first
