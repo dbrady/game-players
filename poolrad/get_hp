@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# get_hp <savechar> - get the current HP of the character
+#
+# savechar is e.g. B5 or C1, meaning the 5th character in savegame B, or the
+# first character in savegame C, respectively
+#
+# max_hp is stored at byte 0x32
+# current_hp is stored at byte -2
+require 'yaml'
+config = YAML::load_file(File.expand_path(File.join(File.dirname(__FILE__), "game_cfg.yml")))
+path = config["game_data_path"]
+filename = File.join path, "CHRDAT#{ARGV[0]}.SAV"
+fail "Could not find Pool of Radiance savegame data file at '#{filename}', check your install directory or game_cfg.yml" unless File.exists?(filename)
+
+data = File.open(filename, "rb").read
+name = data[1..15].unpack("A*").first
+max_hp = data[50].unpack("C").first
+current_hp = data[-2].unpack("C").first
+
+puts "Character #{name} currently has #{current_hp}/#{max_hp} hit points."
