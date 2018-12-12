@@ -31,16 +31,16 @@ class Poolrad
     File.join game_path, save_filename(id, ext)
   end
 
-  def backup_save_filename(id, ext="SAV")
+  def backup_savegame!(id, ext="SAV")
     src = File.join(game_path, save_filename(id, ext))
     dst = File.join(game_path, save_filename(id, ext + ".BAK"))
-    File.cp src, dst
+    puts "Backing up #{src} -> #{dst}..."
+    FileUtils.cp src, dst
   end
 
   def backup_save_filepath(id, ext="SAV")
     File.join game_path, backup_save_filename(id, ext)
   end
-
 
   def assert_game_configuration!
     if !File.directory?(game_path)
