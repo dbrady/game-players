@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
-# get_hp <savechar> - get the current HP of the character
+# get_xp <savechar> - get the current XP of the character
 #
 # savechar is e.g. B5 or C1, meaning the 5th character in savegame B, or the
 # first character in savegame C, respectively
 #
-# max_hp is stored at byte 0x32
-# current_hp is stored at byte -2
+# max_hp is stored in 2 bytes, little-endian, at byte 0xAC
+# e.g. 7,690 xp is 0x1e0a and byte 0xAC=0a and 0xAD=1e
 require_relative 'poolrad'
 id = ARGV[0]
 
@@ -15,7 +15,6 @@ poolrad.assert_save_game_exists! id
 
 data = File.open(poolrad.save_filepath(id), "rb").read
 name = data[1..15].unpack1("A*")
-max_hp = data[50].unpack1("C")
-current_hp = data[-2].unpack1("C")
+current_xp = data[172..173].unpack1("S")
 
-puts "Character #{name} currently has #{current_hp}/#{max_hp} hit points."
+puts "Character #{name} currently has #{current_xp} experience points."

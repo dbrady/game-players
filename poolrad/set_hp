@@ -26,7 +26,7 @@ poolrad.backup_savegame! id
 filename = poolrad.save_filepath(id)
 
 data = File.open(filename, "rb").read
-name = data[1..15].unpack("A*").first
+name = data[1..15].unpack1("A*")
 
 puts "Setting #{name}'s HP to #{ARGV[1]}/#{ARGV[1]}..."
 val = ARGV[1].to_i.chr
