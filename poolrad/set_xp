@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# set_xp <filename> <new_xp> - sets the XP of the character
+# xp is stored in two bytes, little endian, at bytes 0xAC-0xAD
+
+require_relative 'poolrad'
+id = ARGV[0]
+new_xp = ARGV[1].to_i
+
+if new_xp > 65535
+  puts <<LOLBARF
+Cannot set XP higher than 65535. You can't even go past 8th level in this game
+anyway, you monster!
+LOLBARF
+  exit 1
+end
+
+poolrad = Poolrad.new
+poolrad.assert_game_configuration!
+poolrad.assert_save_game_exists! id
+
+get_xp = File.join(poolrad.here, 'get_xp')
+puts `#{get_xp} #{id}`
+
+poolrad.backup_savegame! id
+
+filename = poolrad.save_filepath(id)
+
+data = File.open(filename, "rb").read
+name = data[1..15].unpack1("A*")
+
+puts "Setting #{name}'s XP to #{ARGV[1]}..."
+data[172..173] = [new_xp].pack("S")
+
+File.open(filename, "wb") do |fp|
+  fp.write data
+end
+
+puts `#{get_xp} #{id}`.sub(/currently/, 'now')
