@@ -18,3 +18,14 @@ name = data[1..15].unpack1("A*")
 current_xp = data[172..173].unpack1("S")
 
 puts "Character #{name} currently has #{current_xp} experience points."
+
+# puts "If we jammed that back in, would it be identical?"
+# repacked_xp = [current_xp].pack("S")
+# if repacked_xp == data[172..173]
+#   puts "YES!"
+# else
+#   puts "NO. :-("
+#   puts "Original: #{data[172..173].inspect}"
+#   puts "Repacked: #{repacked_xp.inspect}"
+# end
+s
