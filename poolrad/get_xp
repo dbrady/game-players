@@ -15,7 +15,7 @@ poolrad.assert_save_game_exists! id
 
 data = File.open(poolrad.save_filepath(id), "rb").read
 name = data[1..15].unpack1("A*")
-current_xp = data[172..173].unpack1("S")
+current_xp = data[172..175].unpack1("L")
 
 puts "Character #{name} currently has #{current_xp} experience points."
 
@@ -28,4 +28,3 @@ puts "Character #{name} currently has #{current_xp} experience points."
 #   puts "Original: #{data[172..173].inspect}"
 #   puts "Repacked: #{repacked_xp.inspect}"
 # end
-s
