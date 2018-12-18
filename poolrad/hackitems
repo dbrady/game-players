@@ -1,0 +1,111 @@
+#!/usr/bin/env ruby
+# hackval <filename> <offset> <val> [<offset> <val> [...]]
+#
+# Use in conjunction with hexdump to find values in the character file
+# For example, on character has 16 Arrows +1, and say I want to bump this up to
+# 40. The quantity is stored as text in the name, e.g. "16 ARROWS +1", and also
+# as a byte field containing 0x10. In the file I'm looking at, the text title is
+# at 0x3b0+8 = 944 + 8 = 952. That byte contains the 31 or "1". We'll change
+# that to 34 or "4". 0x3b0+9 contains "36" or "6". We'll change that to 30 or
+# "0". Finally the byte quantity of items is stored at 0x3e0+10 = 992 + 10 =
+# 1002. It contais 0x10 or 16. We'll change that to 40 and call it a day.
+
+# Lazy/evil hack: I'm going to allow myself to read hexdump offsets directly in
+# here, e.g. 0x3b0+8 as an argument, which is easily doable in ruby with
+# "eval". If you download this script and type hackval 'rm -rf /' then you
+# deserve what happens to you. I'm not writting a robust multibase integer
+# parser. I could, mind you; I'm just not GOING to. I literally am writing this
+# script JUST so I don't have to leave the Valhingen Graveyard to go buy more
+# arrows, okay? Yeesh. It's not like I'm cheating.*
+#
+# * HAHAHA this is totally a lie. You CAN'T buy Arrows +1, you can only find
+# them as high-level bandit loot from two very specific encounters.** I am
+# writing this script because I'm tired of using save file scumming to duplicate
+# the arrows so I can fight the mummies and vampires without losing 1,000,000
+# character levels.
+#
+# ** Seriously Pool of Radiance was so unbalanced it's not even funny. Nobody,
+# but nobody can beat this game without saving and retrying over and over until
+# you get the luckiest dice rolls. And yeah yeah yeah, I know somebody will see
+# this script and go look at YouTube and find a cheat-free speedrun and LA LA LA
+# SHUT UP I CAN'T HEAR YOU. Don't submit a pull request don't open an issue. LA
+# LA LA I DON'T CARE.
+
+# Character
+# 0x3b0 + 8 = 31 = '1'
+# 0x3e0 + 10 = 992 + 10 = 1002
+
+require_relative 'poolrad'
+args = ARGV.dup
+id = args.shift
+
+poolrad = Poolrad.new
+poolrad.assert_game_configuration!
+poolrad.assert_save_game_exists! id
+
+badargs = false
+args = true if args.size % 2 == 1
+badargs = true if args.each_slice(2).any? {|offset,val| !(0..127).include?(val.to_i) }
+
+if badargs
+  poolrad.barf_to_death! <<WHO_TOLD_YOU_YOU_COULD_RUN_THIS
+Okay, stupid. Pay attention. This script is SERIOUSLY dangerous and you cannot
+believe how cheerfully it will do what you told it to do and right now that it
+certainly not what you meant. This is the last safety check before you really
+wish you had make backups. SO PAY ATTENTION:
+
+USAGE:
+hackchar <id> <address> <val> [<address2> <val2> [...]]
+
+Notes:
+- id must be a PoR savefile id, e.g. B1 or C6
+- address can be any integer that ruby can `eval`, you heard me, `eval`, wipe
+  out your hard drive if you want. But yes, you can say `hackchar B1 1002 40`,
+  or you can say `hackchar B1 0x3e0+10 40` and you can thank me later after
+  you've realized you can go straight from hexdump -C to punching in the row and
+  offset here instead of having to calculate hex to decimal. YOU'RE WELCOME.
+- val must be between 0 and 127. I don't know if you can have more than 127 of a
+  thing or not, or more than 255, but I'm not risking it.
+
+For further help, go read the source code. Seriously there's evals in
+there. Don't trust this documentation or anything else.
+WHO_TOLD_YOU_YOU_COULD_RUN_THIS
+end
+puts '-' * 80
+tweaks = args.each_slice(2).map do |offset, val|
+  addr = eval(offset)
+  puts addr
+  byte = val.to_i
+  puts byte
+  [addr, byte]
+end
+puts '-' * 80
+
+filename = poolrad.save_filepath(id, "ITM")
+data = File.open(filename, "rb").read
+puts "filesize: #{data.size}"
+puts "Okay, I'm about to hack up #{filename}..."
+puts "With the following:"
+tweaks.each do |addr, byte|
+  puts "Address: #{addr}"
+  puts "Current: #{data[addr].unpack1('c')}"
+  puts "New: #{byte}"
+  # puts sprintf(
+  #        "At offset %04x, change %02x (%d) -> %02x (%d)",
+  #        addr,
+  #        data[addr], data[addr],
+  #        byte, byte
+  #      )
+end
+tweaks.each do |addr,byte|
+  data[addr] = [byte].pack('C')
+end
+puts "Here are the new values:"
+tweaks.each do |addr, byte|
+  puts "Address: #{addr}"
+  puts "Current: #{data[addr].unpack1('c')}"
+  puts "New: #{byte}"
+end
+File.open(filename, "wb") do |fp|
+  fp.write data
+end
