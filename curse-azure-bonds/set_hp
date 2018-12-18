@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+# set_hp <filename> <new_hp> - sets the current and max HP of the character
+# max_hp is stored at byte 0x32
+# current_hp is stored at byte -2
+require_relative 'poolrad'
+id = ARGV[0]
+new_hp = ARGV[1]
+
+if ARGV[1].to_i > 255
+  puts <<LOLBARF
+Cannot set HP higher than 255. You can't even go past 8th level in this game
+anyway, you monster!
+LOLBARF
+  exit 1
+end
+
+poolrad = Poolrad.new
+poolrad.assert_game_configuration!
+poolrad.assert_save_game_exists! id
+
+get_hp = File.join(poolrad.here, 'get_hp')
+puts `#{get_hp} #{id}`
+
+poolrad.backup_savegame! id
+
+filename = poolrad.save_filepath(id)
+
+data = File.open(filename, "rb").read
+name = data[1..15].unpack1("A*")
+
+puts "Setting #{name}'s HP to #{ARGV[1]}/#{ARGV[1]}..."
+val = ARGV[1].to_i.chr
+data[120] = data[-2] = val
+
+File.open(filename, "wb") do |fp|
+  fp.write data
+end
+
+puts `#{get_hp} #{id}`.sub(/currently/, 'now')
