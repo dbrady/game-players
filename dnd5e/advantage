@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+# advantage - Calculate chance of beating a roll with advantage or disadvantage
+
+def usage
+  str =<<USAGE
+advantage - Calculate chance of beating a roll with advantage (or disadvantage)
+
+Usage:
+advantage - show 1-20 advantage/disadvantage table
+advantage <dc> <bonus|penalty> - show % chance of beating a specific DC with a
+    given penalty or bonus, e.g advantage 23 +5 or advantage 10 -3.
+USAGE
+end
+
+def display_usage
+  puts usage
+end
+
+
+def pass_with_advantage(dc, roll1, roll2)
+  roll1 >= dc || roll2 >= dc
+end
+
+def pass_with_disadvantage(dc, roll1, roll2)
+  roll1 >= dc && roll2 >= dc
+end
+
+def count_successes_with_advantage_against(dc)
+  successes = 0
+  (1..20).each do |roll1|
+    (1..20).each do |roll2|
+      successes += 1 if pass_with_advantage(dc, roll1, roll2)
+    end
+  end
+  successes
+end
+
+def count_successes_with_disadvantage_against(dc)
+  successes = 0
+  (1..20).each do |roll1|
+    (1..20).each do |roll2|
+      successes += 1 if pass_with_disadvantage(dc, roll1, roll2)
+    end
+  end
+  successes
+end
+
+def percentage(successes, possible)
+  (100.0*successes.to_f)/possible.to_f
+end
+
+def display_success_line(title, advantage_wins, disadvantage_wins, possible)
+  puts "%s | %3d/%3d (%6.2f%%) | %3d/%3d (%6.2f%%)" % [
+         title,
+         advantage_wins,
+         possible,
+         percentage(advantage_wins, possible),
+         disadvantage_wins,
+         possible,
+         percentage(disadvantage_wins, possible)
+       ]
+end
+
+def display_advantage_table
+  puts "%2s | %-17s | %-17s" % ["DC", "Advantage", "Disadvantage"]
+  (1..20).each do |dc|
+    advantage_wins = count_successes_with_advantage_against(dc)
+    disadvantage_wins = count_successes_with_disadvantage_against(dc)
+    possible = 400
+    display_success_line(sprintf("%2d", dc), advantage_wins, disadvantage_wins, possible)
+  end
+end
+
+if __FILE__==$0
+  args = ARGV.dup
+  if args.empty?
+    display_advantage_table
+  elsif args.size == 2
+    dc,bonus = *args.map(&:to_i)
+    advantage_wins = count_successes_with_advantage_against(dc-bonus)
+    disadvantage_wins = count_successes_with_disadvantage_against(dc-bonus)
+    possible = 400
+    display_success_line(sprintf("%2d (%+d)", dc, bonus), advantage_wins, disadvantage_wins, possible)
+  else
+    display_usage
+  end
+end
