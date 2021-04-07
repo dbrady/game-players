@@ -1,4 +1,34 @@
 #!/usr/bin/env ruby
+# countdown_maths <a> <b> <c> <d> <e> <f> <target>
+#
+# Print out the 10 shortest solutions to reach target. If no solutions are
+# possible, print "*** NO SOLUTIONS POSSIBLE ***" and exit with an error code.
+#
+# Given 6 starting numbers and a target, use the four basic arithmetic operators
+# and integers only to create an arithmetic expression that reaches the
+# target. You can construct in-between values as long as they are also
+# integers. You can only use each number once. You do not have to use all the
+# numbers.
+#
+# Example:
+# 1 2 3 4 5 6 21
+#
+# An obvious solution to this would be to just sum up 1+2+3+4+5+6 = 21, and that
+# is a valid solution. But you could also do (5+2)*3=21 or (6+1)*3=21 and so
+# on. You could even do crazy stuff like 6-1=5, 4/2=2, 5+2=7, 7*3=21. The solver
+# would write this out as a single expression like so: (((6 - 1) + (4 / 2)) *
+# 3).
+#
+# No attempt is made to reproduce the number sampling of the show, where
+# contestants pick "random" numbers from two banks of cards, "little" and
+# "big". Big numbers is a bank of 7 cards containing some combination of 10, 25,
+# 50, 75, and 100. Little numbers is a bank of 28 cards containing the numbers 1
+# to 9.
+#
+# You can pass this program 3 numbers and a target, or 13 numbers and a
+# target. Beware that the solution is at least O(n**6) with 4 operations per
+# pair and n**2 pairs (nPr - permutation function). A standard 6-number solve
+# takes about 6 seconds on a 2.7GHz machine.
 require_relative '../lib/number'
 require_relative '../lib/solver'
 
@@ -8,6 +38,12 @@ goal = numbers.pop
 puts "Goal: #{goal}"
 puts "Numbers: #{numbers * ' '}"
 solvers = Solver.new(numbers, goal).solve
+# This is rare, but it IS possible. There is footage of the host asking "Can it
+# be done?" and Rachel Riley replying "No, the closest you can get is..."
+unless solvers
+  puts "*** NO SOLUTIONS POSSIBLE ***"
+  exit 1
+end
 solutions = solvers.map {|s| Array(s) }.flatten
 num_sols = solutions.size
 # uniquify by .to_s
