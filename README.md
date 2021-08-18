@@ -1,5 +1,8 @@
 # Game Players
 
+"Cheats are for people who don't like playing video games." -- Unknown
+
+
 When I find a game I like, I play the heck out of it. When I find a game I love,
 I write programs to play it for me.
 
@@ -7,6 +10,8 @@ If there's two things I love, it's programming computers and playing games. Few
 things in life make me as happy as when I can combine both loves. This repo is a
 gathering place for the scripts, tools and toys I use to solve puzzles, crack
 codes, play games, etc.
+
+This repo is organized by game.
 
 ## Solvers
 
