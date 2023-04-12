@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gem "nokogiri", "~> 1.12"
+gem "nokogiri", "~> 1.14"
 gem "colorize", "~> 0.8.1"
 
 # Can't decide? Why not both?
